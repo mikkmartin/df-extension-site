@@ -1,10 +1,21 @@
 import styled from 'styled-components'
+import Image from 'next/image'
 
-const Title = styled.h1`
-  color: blue;
-  font-size: 50px;
-`
+const myLoader = ({ src, width, quality }: any) => {
+  return `https://dev.designfactory.app/files/${src}.png`
+}
 
 export default function Home() {
-  return <Title>My page</Title>
+  const slug = 'photography-blog-og'
+  return (
+    <Container>
+      My page
+      <Image loader={myLoader} src={slug} width={800} height={418} />
+    </Container>
+  )
 }
+
+const Container = styled.div`
+  padding: 2rem;
+  font-size: 50px;
+`
