@@ -17,14 +17,14 @@ export const Layout = ({ children }) => {
 const Container = styled.div`
   max-width: 1200px;
   margin: auto;
-  padding: 0 1rem;
+  padding: 0 1rem 6vh 1rem;
   .header {
 		display: grid;
     justify-content: space-between;
     grid-template-areas:
 		'title chrome'
 		'subtitle chrome';
-		padding: 1rem 0;
+		padding: 3vh 0;
     h1,
     h4 {
       line-height: 100%;

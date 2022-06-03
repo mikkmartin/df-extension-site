@@ -1,21 +1,51 @@
 import styled from 'styled-components'
 import Image from 'next/image'
 import { Layout } from 'components/Layout'
-
-const myLoader = ({ src, width, quality }: any) => {
-  return `https://dev.designfactory.app/files/${src}.png`
-}
+import { motion } from 'framer-motion'
 
 export default function Home() {
   const slug = 'photography-blog-og'
   return (
     <Layout>
       <Container>
-        <Image loader={myLoader} src={slug} width={800} height={418} />
+        <TempalateRow site="Levila.ee" />
+        <TempalateRow site="Muurileht.ee" />
+        <TempalateRow site="Idaidaida.net" />
       </Container>
     </Layout>
   )
 }
 
-const Container = styled.div`
+const animations = {
+  whileHover: { scale: 1.03 },
+}
+const TempalateRow = ({ site = 'Reddit.com' }) => {
+  return (
+    <TempalateRowGrid>
+      <h4>{site}</h4>
+      <motion.img {...animations} src="story-reddit-1.png" alt="" />
+      <motion.img {...animations} src="story-reddit-1.png" alt="" />
+      <motion.img {...animations} src="story-reddit-1.png" alt="" />
+    </TempalateRowGrid>
+  )
+}
+
+const TempalateRowGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas: 'title title title';
+  grid-gap: 1rem;
+  h4 {
+    grid-area: title;
+  }
+  img {
+    max-width: 100%;
+    border-radius: 1rem;
+    transition: filter 0.2s ease-in-out;
+    &:hover {
+      filter: brightness(1.1);
+    }
+  }
 `
+const Container = styled.div``
