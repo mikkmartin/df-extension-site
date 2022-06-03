@@ -1,10 +1,8 @@
 import styled from 'styled-components'
-import Image from 'next/image'
 import { Layout } from 'components/Layout'
 import { motion } from 'framer-motion'
 
 export default function Home() {
-  const slug = 'photography-blog-og'
   return (
     <Layout>
       <Container>
