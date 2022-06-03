@@ -1,18 +1,50 @@
-import styled from 'styled-components'
 import { ChromeWebstore } from './icons/ChromeWebstore'
+import * as Dialog from '@radix-ui/react-dialog'
+import { AnimatePresence } from 'framer-motion'
+import styled from 'styled-components'
+import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { useRef } from 'react'
 
-export const Layout = () => {
+const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
+
+export const Layout = ({ children }) => {
+  const ref = useRef(null)
+  const router = useRouter()
+
   return (
-    <Container>
+    <Container ref={ref}>
       <div className="header">
         <h4>DesignFactory</h4>
         <h1>Story templates</h1>
         <ChromeWebstore />
       </div>
-      <TempalateRow site="Levila.ee" />
-      <TempalateRow site="Muurileht.ee" />
-      <TempalateRow site="Idaidaida.net" />
+      <Dialog.Root open={true}>
+        <TempalateRow key="a" site="Levila.ee" />
+        <TempalateRow key="b" site="Muurileht.ee" />
+        <TempalateRow key="c" site="Idaidaida.net" />
+        <Dialog.Portal forceMount container={ref.current}>
+          <AnimatePresence initial={true}>
+            <Dialog.Overlay key="o" forceMount asChild onClick={router.back}>
+              {router.pathname !== '/' && (
+                <Overlay
+                  key="overlay"
+                  initial="hidden"
+                  animate="shown"
+                  exit="hidden"
+                  transition={{ duration: 0.2 }}
+                  variants={{
+                    hidden: { opacity: 0 },
+                    shown: { opacity: 1 },
+                  }}
+                />
+              )}
+            </Dialog.Overlay>
+            {children}
+          </AnimatePresence>
+        </Dialog.Portal>
+      </Dialog.Root>
     </Container>
   )
 }
@@ -53,13 +85,24 @@ const Container = styled.div`
 const animations = {
   whileHover: { scale: 1.03 },
 }
-const TempalateRow = ({ site = 'Reddit.com' }) => {
+const TempalateRow = ({ site }) => {
   return (
     <TempalateRowGrid>
       <h4>{site}</h4>
-      <motion.img {...animations} src="story-reddit-1.png" alt="" />
-      <motion.img {...animations} src="story-reddit-1.png" alt="" />
-      <motion.img {...animations} src="story-reddit-1.png" alt="" />
+      {[...Array(3)].map((_, i) => (
+        <Link key={i} href={`${site}-${i}`}>
+          <Dialog.Trigger key={i} asChild>
+            <a>
+              <motion.div
+                className="frame"
+                transition={{ default: fast, opacity: { duration: 0 } }}
+                layoutId={`${site}-${i}`}>
+                <motion.img {...animations} src="story-reddit-1.png" alt="" />
+              </motion.div>
+            </a>
+          </Dialog.Trigger>
+        </Link>
+      ))}
     </TempalateRowGrid>
   )
 }
@@ -74,6 +117,7 @@ const TempalateRowGrid = styled.div`
     grid-area: title;
   }
   img {
+    cursor: pointer;
     max-width: 100%;
     border-radius: 1rem;
     transition: filter 0.2s ease-in-out;
@@ -81,4 +125,11 @@ const TempalateRowGrid = styled.div`
       filter: brightness(1.1);
     }
   }
+`
+
+const Overlay = styled(motion.div)`
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  position: fixed;
+  inset: 0;
 `
