@@ -12,6 +12,12 @@ const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 export const Layout = ({ children }) => {
   const ref = useRef(null)
   const router = useRouter()
+  const isOpen = router.asPath !== '/'
+  console.log({ isOpen })
+
+  const handleOpenChange = state => {
+    if (!state) router.back()
+  }
 
   return (
     <Container ref={ref}>
@@ -20,14 +26,14 @@ export const Layout = ({ children }) => {
         <h1>Story templates</h1>
         <ChromeWebstore />
       </div>
-      <Dialog.Root open={true}>
+      <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
         <TempalateRow key="a" site="Levila.ee" />
         <TempalateRow key="b" site="Muurileht.ee" />
         <TempalateRow key="c" site="Idaidaida.net" />
         <Dialog.Portal forceMount container={ref.current}>
-          <AnimatePresence initial={true}>
-            <Dialog.Overlay key="o" forceMount asChild onClick={router.back}>
-              {router.pathname !== '/' && (
+          <AnimatePresence initial={false}>
+            {isOpen && (
+              <Dialog.Overlay key="o" forceMount asChild>
                 <Overlay
                   key="overlay"
                   initial="hidden"
@@ -39,8 +45,8 @@ export const Layout = ({ children }) => {
                     shown: { opacity: 1 },
                   }}
                 />
-              )}
-            </Dialog.Overlay>
+              </Dialog.Overlay>
+            )}
             {children}
           </AnimatePresence>
         </Dialog.Portal>
@@ -90,17 +96,17 @@ const TempalateRow = ({ site }) => {
     <TempalateRowGrid>
       <h4>{site}</h4>
       {[...Array(3)].map((_, i) => (
-        <Link key={i} href={`${site}-${i}`}>
-          <Dialog.Trigger key={i} asChild>
-            <a>
+        <Link key={i} href={`${site}-${i}`} scroll={false}>
+          <a>
+            <Dialog.Trigger key={i} asChild>
               <motion.div
                 className="frame"
                 transition={{ default: fast, opacity: { duration: 0 } }}
                 layoutId={`${site}-${i}`}>
                 <motion.img {...animations} src="story-reddit-1.png" alt="" />
               </motion.div>
-            </a>
-          </Dialog.Trigger>
+            </Dialog.Trigger>
+          </a>
         </Link>
       ))}
     </TempalateRowGrid>

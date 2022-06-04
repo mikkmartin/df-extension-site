@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
 export default function Site() {
-  const { query } = useRouter()
+  const { query, back } = useRouter()
 
   return (
     <Dialog.Content forceMount asChild>
