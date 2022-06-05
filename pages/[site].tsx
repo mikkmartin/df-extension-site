@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
 export default function Site() {
-  const { query, back } = useRouter()
+  const { query } = useRouter()
 
   return (
     <Dialog.Content forceMount asChild>
@@ -43,30 +43,6 @@ export default function Site() {
     </Dialog.Content>
   )
 }
-
-const Container = styled.div`
-  display: grid;
-  grid-template-columns: 400px 400px 400px;
-  gap: 8px;
-  .frame {
-    position: relative;
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      margin: -8rem -2rem;
-      padding: 8rem 2rem;
-      background-image: url('phone.png');
-      background-size: cover;
-      z-index: -1;
-      opacity: 0;
-    }
-    img {
-      width: 400px;
-      border-radius: 16px;
-    }
-  }
-`
 
 const Content = styled(motion.div)`
   position: fixed;

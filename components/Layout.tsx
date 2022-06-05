@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useRef } from 'react'
+import { FC, useRef } from 'react'
 
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
@@ -27,9 +27,26 @@ export const Layout = ({ children }) => {
         <ChromeWebstore />
       </div>
       <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
-        <TempalateRow key="a" site="Levila.ee" />
-        <TempalateRow key="b" site="Muurileht.ee" />
-        <TempalateRow key="c" site="Idaidaida.net" />
+        <TempalateRow
+          key="d"
+          site="Reddit.com"
+          images={['story-reddit-1.png', 'story-reddit-1.png', 'story-reddit-1.png']}
+        />
+        <TempalateRow
+          key="a"
+          site="Edasi.ee"
+          images={['edasi-1.png', 'edasi-2.png', 'edasi-3.png']}
+        />
+        <TempalateRow
+          key="b"
+          site="Levila.ee"
+          images={['story-levila-1.png', 'story-levila-2.png', 'story-levila-3.png']}
+        />
+        <TempalateRow
+          key="c"
+          site="Muurileht.ee"
+          images={['muurileht-1.png', 'muurileht-2.png', 'muurileht-3.png']}
+        />
         <Dialog.Portal forceMount container={ref.current}>
           <AnimatePresence initial={false}>
             {isOpen && (
@@ -56,7 +73,7 @@ export const Layout = ({ children }) => {
 }
 
 const Container = styled.div`
-  max-width: 1200px;
+  max-width: 900px;
   margin: auto;
   padding: 0 1rem 6vh 1rem;
   .header {
@@ -91,11 +108,15 @@ const Container = styled.div`
 const animations = {
   whileHover: { scale: 1.03 },
 }
-const TempalateRow = ({ site }) => {
+type Props = {
+  site: string
+  images: string[]
+}
+const TempalateRow: FC<Props> = ({ site, images }) => {
   return (
     <TempalateRowGrid>
       <h4>{site}</h4>
-      {[...Array(3)].map((_, i) => (
+      {images.map((image, i) => (
         <Link key={i} href={`${site}-${i}`} scroll={false}>
           <a>
             <Dialog.Trigger key={i} asChild>
@@ -103,7 +124,7 @@ const TempalateRow = ({ site }) => {
                 className="frame"
                 transition={{ default: fast, opacity: { duration: 0 } }}
                 layoutId={`${site}-${i}`}>
-                <motion.img {...animations} src="story-reddit-1.png" alt="" />
+                <motion.img {...animations} src={image} alt="" />
               </motion.div>
             </Dialog.Trigger>
           </a>
@@ -125,7 +146,7 @@ const TempalateRowGrid = styled.div`
   img {
     cursor: pointer;
     max-width: 100%;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     transition: filter 0.2s ease-in-out;
     &:hover {
       filter: brightness(1.1);
