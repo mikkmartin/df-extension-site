@@ -99,13 +99,14 @@ type Props = {
 }
 const TempalateRow: FC<Props> = ({ site, images }) => {
   const router = useRouter()
-  const previousQuery = usePrevious(router.query.story)
+  const query = router.query.story as string
+  const previousQuery = usePrevious(query)
 
   return (
     <TempalateRowGrid>
       <h4>{site}</h4>
       {images.map(({ src, id }, i) => {
-        const zIndex = id === previousQuery ? 1 : 'initial'
+        const zIndex = id === previousQuery || id === query ? 1 : 'initial'
 
         return (
           <Link key={i} href={id} scroll={false}>
