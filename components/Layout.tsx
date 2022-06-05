@@ -5,7 +5,9 @@ import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { FC, useRef } from 'react'
+import { FC } from 'react'
+import { defaultTemplates } from 'data/defaultTemplates'
+import { usePrevious } from 'react-use'
 
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
@@ -43,26 +45,9 @@ export const Layout = ({ children }) => {
           )}
           {children}
         </AnimatePresence>
-        <TempalateRow
-          key="d"
-          site="Reddit.com"
-          images={['story-reddit-1.png', 'story-reddit-1.png', 'story-reddit-1.png']}
-        />
-        <TempalateRow
-          key="a"
-          site="Edasi.ee"
-          images={['edasi-1.png', 'edasi-2.png', 'edasi-3.png']}
-        />
-        <TempalateRow
-          key="b"
-          site="Levila.ee"
-          images={['story-levila-1.png', 'story-levila-2.png', 'story-levila-3.png']}
-        />
-        <TempalateRow
-          key="c"
-          site="Muurileht.ee"
-          images={['muurileht-1.png', 'muurileht-2.png', 'muurileht-3.png']}
-        />
+        {defaultTemplates.map(({ name, images }, i) => (
+          <TempalateRow key={i} site={name} images={images} />
+        ))}
       </Dialog.Root>
     </Container>
   )
@@ -106,23 +91,34 @@ const animations = {
 }
 type Props = {
   site: string
-  images: string[]
+  images: {
+    id: string
+    src: string
+    url: string
+  }[]
 }
 const TempalateRow: FC<Props> = ({ site, images }) => {
+  const router = useRouter()
+  const previousQuery = usePrevious(router.query.story)
+
   return (
     <TempalateRowGrid>
       <h4>{site}</h4>
-      {images.map((image, i) => (
-        <Link key={i} href={`${site}-${i}`} scroll={false}>
-          <a>
-            <Dialog.Trigger key={i} asChild>
-              <motion.div className="frame" transition={fast} layoutId={`${site}-${i}`}>
-                <motion.img {...animations} src={image} alt="" />
-              </motion.div>
-            </Dialog.Trigger>
-          </a>
-        </Link>
-      ))}
+      {images.map(({ src, id }, i) => {
+        const zIndex = id === previousQuery ? 1 : 'initial'
+
+        return (
+          <Link key={i} href={id} scroll={false}>
+            <a>
+              <Dialog.Trigger key={i} asChild>
+                <motion.div className="frame" transition={fast} layoutId={id} style={{ zIndex }}>
+                  <motion.img {...animations} src={src} alt="" />
+                </motion.div>
+              </Dialog.Trigger>
+            </a>
+          </Link>
+        )
+      })}
     </TempalateRowGrid>
   )
 }

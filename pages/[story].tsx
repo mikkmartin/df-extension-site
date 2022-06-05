@@ -1,13 +1,18 @@
 import styled from 'styled-components'
 import * as Dialog from '@radix-ui/react-dialog'
 import { motion } from 'framer-motion'
-import { useRouter } from 'next/router'
+import { defaultTemplates } from 'data/defaultTemplates'
+import { FC } from 'react'
+import { GetServerSideProps } from 'next'
 
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
-export default function Site() {
-  const { query } = useRouter()
+type Props = {
+  id: string
+  src: string
+}
 
+const Story: FC<Props> = ({ id, src }) => {
   return (
     <Dialog.Content forceMount asChild>
       <Content key="content">
@@ -17,6 +22,7 @@ export default function Site() {
           initial="hidden"
           animate="shown"
           exit="hidden"
+          style={{ zIndex: 2 }}
           transition={{ duration: 0.2 }}
           variants={{
             hidden: { opacity: 0 },
@@ -28,7 +34,7 @@ export default function Site() {
         <motion.div
           key="frame"
           className="frame"
-          layoutId={query.site as string}
+          layoutId={id}
           initial="hidden"
           animate="shown"
           exit="hidden"
@@ -37,12 +43,26 @@ export default function Site() {
             hidden: { opacity: 0 },
             shown: { opacity: 1 },
           }}>
-          <motion.img src="story-reddit-1.png" alt="" />
+          <motion.img src={src} alt="" />
         </motion.div>
       </Content>
     </Dialog.Content>
   )
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const path = query.story as string
+  if (!path) return { notFound: true }
+  const props = defaultTemplates.reduceRight<any>((all, template) => {
+    const found = template.images.find(({ id }) => id === path)
+    if (found) return found
+    return all
+  }, undefined)
+  if (!props) return { notFound: true }
+  return { props }
+}
+
+export default Story
 
 const Content = styled(motion.div)`
   position: fixed;
