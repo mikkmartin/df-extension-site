@@ -25,6 +25,24 @@ export const Layout = ({ children }) => {
         <ChromeWebstore />
       </div>
       <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <Dialog.Overlay key="o" forceMount asChild>
+              <Overlay
+                key="overlay"
+                initial="hidden"
+                animate="shown"
+                exit="hidden"
+                transition={{ duration: 0.2 }}
+                variants={{
+                  hidden: { opacity: 0 },
+                  shown: { opacity: 1 },
+                }}
+              />
+            </Dialog.Overlay>
+          )}
+          {children}
+        </AnimatePresence>
         <TempalateRow
           key="d"
           site="Reddit.com"
@@ -45,24 +63,6 @@ export const Layout = ({ children }) => {
           site="Muurileht.ee"
           images={['muurileht-1.png', 'muurileht-2.png', 'muurileht-3.png']}
         />
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <Dialog.Overlay key="o" forceMount asChild>
-              <Overlay
-                key="overlay"
-                initial="hidden"
-                animate="shown"
-                exit="hidden"
-                transition={{ duration: 0.2 }}
-                variants={{
-                  hidden: { opacity: 0 },
-                  shown: { opacity: 1 },
-                }}
-              />
-            </Dialog.Overlay>
-          )}
-          {children}
-        </AnimatePresence>
       </Dialog.Root>
     </Container>
   )
