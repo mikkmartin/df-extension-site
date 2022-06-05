@@ -10,17 +10,15 @@ import { FC, useRef } from 'react'
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
 export const Layout = ({ children }) => {
-  const ref = useRef(null)
   const router = useRouter()
   const isOpen = router.asPath !== '/'
-  console.log({ isOpen })
 
   const handleOpenChange = state => {
-    if (!state) router.back()
+    if (!state) router.push('/', undefined, { scroll: false })
   }
 
   return (
-    <Container ref={ref}>
+    <Container>
       <div className="header">
         <h4>DesignFactory</h4>
         <h1>Story templates</h1>
@@ -47,26 +45,24 @@ export const Layout = ({ children }) => {
           site="Muurileht.ee"
           images={['muurileht-1.png', 'muurileht-2.png', 'muurileht-3.png']}
         />
-        <Dialog.Portal forceMount container={ref.current}>
-          <AnimatePresence initial={false}>
-            {isOpen && (
-              <Dialog.Overlay key="o" forceMount asChild>
-                <Overlay
-                  key="overlay"
-                  initial="hidden"
-                  animate="shown"
-                  exit="hidden"
-                  transition={{ duration: 0.2 }}
-                  variants={{
-                    hidden: { opacity: 0 },
-                    shown: { opacity: 1 },
-                  }}
-                />
-              </Dialog.Overlay>
-            )}
-            {children}
-          </AnimatePresence>
-        </Dialog.Portal>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <Dialog.Overlay key="o" forceMount asChild>
+              <Overlay
+                key="overlay"
+                initial="hidden"
+                animate="shown"
+                exit="hidden"
+                transition={{ duration: 0.2 }}
+                variants={{
+                  hidden: { opacity: 0 },
+                  shown: { opacity: 1 },
+                }}
+              />
+            </Dialog.Overlay>
+          )}
+          {children}
+        </AnimatePresence>
       </Dialog.Root>
     </Container>
   )
