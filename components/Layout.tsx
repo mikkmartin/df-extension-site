@@ -116,10 +116,7 @@ const TempalateRow: FC<Props> = ({ site, images }) => {
         <Link key={i} href={`${site}-${i}`} scroll={false}>
           <a>
             <Dialog.Trigger key={i} asChild>
-              <motion.div
-                className="frame"
-                transition={{ default: fast, opacity: { duration: 0 } }}
-                layoutId={`${site}-${i}`}>
+              <motion.div className="frame" transition={fast} layoutId={`${site}-${i}`}>
                 <motion.img {...animations} src={image} alt="" />
               </motion.div>
             </Dialog.Trigger>
