@@ -1,6 +1,7 @@
 export const defaultTemplates = [
   {
     name: 'Reddit.com',
+    description: '',
     images: [
       { id: 'pb4jf', src: 'story-reddit-1.png', url: '' },
       { id: 'T8njW', src: 'story-reddit-1.png', url: '' },
@@ -9,6 +10,7 @@ export const defaultTemplates = [
   },
   {
     name: 'Levila.ee',
+    description: 'Levila artiklitest story piltide looja.',
     images: [
       { id: 'd54Vs', src: 'story-levila-1.png', url: '' },
       { id: '9usOA', src: 'story-levila-2.png', url: '' },
@@ -17,6 +19,7 @@ export const defaultTemplates = [
   },
   {
     name: 'Edasi.ee',
+    description: '',
     images: [
       { id: '3PwYR', src: 'edasi-1.png', url: '' },
       { id: 'EVYXI', src: 'edasi-2.png', url: '' },
@@ -25,6 +28,7 @@ export const defaultTemplates = [
   },
   {
     name: 'Muurileht.ee',
+    description: '',
     images: [
       { id: 'IC2cN', src: 'muurileht-1.png', url: '' },
       { id: 'lvhZU', src: 'muurileht-2.png', url: '' },

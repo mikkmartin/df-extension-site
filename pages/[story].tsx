@@ -1,3 +1,4 @@
+import { ChromeWebstore } from 'components/icons/ChromeWebstore'
 import styled from 'styled-components'
 import * as Dialog from '@radix-ui/react-dialog'
 import { motion } from 'framer-motion'
@@ -10,9 +11,10 @@ const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 type Props = {
   id: string
   src: string
+  description: string
 }
 
-const Story: FC<Props> = ({ id, src }) => {
+const Story: FC<Props> = ({ id, src, description }) => {
   return (
     <Dialog.Content forceMount asChild>
       <Content key="content">
@@ -28,8 +30,10 @@ const Story: FC<Props> = ({ id, src }) => {
             hidden: { opacity: 0 },
             shown: { opacity: 1 },
           }}>
+          <Dialog.Close>All templates</Dialog.Close>
           <h1>Template title</h1>
-          <button>Create story</button>
+          <p>{description}</p>
+          <ChromeWebstore />
         </motion.div>
         <motion.div
           key="frame"
@@ -53,9 +57,9 @@ const Story: FC<Props> = ({ id, src }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const path = query.story as string
   if (!path) return { notFound: true }
-  const props = defaultTemplates.reduceRight<any>((all, template) => {
-    const found = template.images.find(({ id }) => id === path)
-    if (found) return found
+  const props = defaultTemplates.reduceRight<any>((all, { images, description }) => {
+    const found = images.find(({ id }) => id === path)
+    if (found) return { ...found, description }
     return all
   }, undefined)
   if (!props) return { notFound: true }
@@ -71,11 +75,14 @@ const Content = styled(motion.div)`
   transform: translate(-50%, -50%);
   display: flex;
   color: white;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
   &:focus {
     outline: none;
   }
   .txt {
-    width: 20vw;
+    min-width: 30vw;
   }
   .frame {
     position: relative;

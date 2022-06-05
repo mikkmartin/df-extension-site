@@ -145,8 +145,8 @@ const TempalateRowGrid = styled.div`
 `
 
 const Overlay = styled(motion.div)`
-  background-color: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(16px) saturate(180%);
+  background-color: rgba(50, 55, 65, 0.83);
+  backdrop-filter: blur(32px) saturate(180%);
   position: fixed;
   inset: 0;
 `
