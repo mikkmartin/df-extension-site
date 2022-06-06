@@ -59,4 +59,29 @@ export const GlobalStyles = createGlobalStyle`
     h5 {font-size: 1.125rem;}
     small, .text_small {font-size: 0.889rem;}
   }
+  button {
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    padding: 1rem 2rem;
+    border-radius: 99rem;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    &:hover, &:focus {
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+    }
+    &:active {
+      background: white;
+      color: black;
+    }
+    svg {
+      margin-left: -1rem;
+    }
+  }
 `

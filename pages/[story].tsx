@@ -5,16 +5,18 @@ import { motion } from 'framer-motion'
 import { defaultTemplates } from 'data/defaultTemplates'
 import { FC } from 'react'
 import { GetServerSideProps } from 'next'
+import { Chevron } from 'components/icons/Chevron'
 
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
 type Props = {
   id: string
   src: string
+  name: string
   description: string
 }
 
-const Story: FC<Props> = ({ id, src, description }) => {
+const Story: FC<Props> = ({ id, src, name, description }) => {
   return (
     <Dialog.Content forceMount asChild>
       <Content key="content">
@@ -30,8 +32,11 @@ const Story: FC<Props> = ({ id, src, description }) => {
             hidden: { opacity: 0 },
             shown: { opacity: 1 },
           }}>
-          <Dialog.Close>All templates</Dialog.Close>
-          <h2>Template title</h2>
+          <Dialog.Close>
+            <Chevron dir="left" />
+            All templates
+          </Dialog.Close>
+          <h1>{name}</h1>
           <p>{description}</p>
           <ChromeWebstore />
         </motion.div>
@@ -57,9 +62,9 @@ const Story: FC<Props> = ({ id, src, description }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const path = query.story as string
   if (!path) return { notFound: true }
-  const props = defaultTemplates.reduceRight<any>((all, { images, description }) => {
+  const props = defaultTemplates.reduceRight<any>((all, { images, name, description }) => {
     const found = images.find(({ id }) => id === path)
-    if (found) return { ...found, description }
+    if (found) return { ...found, name, description }
     return all
   }, undefined)
   if (!props) return { notFound: true }
@@ -89,7 +94,7 @@ const Content = styled(motion.div)`
     aspect-ratio: 1314 / 2661;
     display: grid;
     place-items: start center;
-    padding: 16% 5.5%;
+    padding: 18.75% 5.5%;
     &::before {
       content: '';
       position: absolute;
@@ -103,7 +108,7 @@ const Content = styled(motion.div)`
       content: '';
       position: absolute;
       aspect-ratio: 540 / 1170;
-      inset: 2.2% 5.65%;
+      inset: 3.7% 5.65%;
       background-image: url('ig-overlay.png');
       background-size: cover;
       opacity: 1;
