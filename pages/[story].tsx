@@ -13,10 +13,11 @@ type Props = {
   id: string
   src: string
   name: string
+  url: string
   description: string
 }
 
-const Story: FC<Props> = ({ id, src, name, description }) => {
+const Story: FC<Props> = ({ id, src, name, url, description }) => {
   return (
     <Dialog.Content forceMount asChild>
       <Content key="content">
@@ -34,10 +35,14 @@ const Story: FC<Props> = ({ id, src, name, description }) => {
           }}>
           <Dialog.Close>
             <Chevron dir="left" />
-            All templates
+            Templates
           </Dialog.Close>
-          <h1>{name}</h1>
+          <h1>{name} story</h1>
           <p>{description}</p>
+          <form onSubmit={ev => ev.preventDefault()}>
+            <input type="text" placeholder={url} />
+            <button type="submit">Generate</button>
+          </form>
           <ChromeWebstore />
         </motion.div>
         <motion.div
@@ -77,19 +82,30 @@ const Content = styled(motion.div)`
   position: fixed;
   top: 50%;
   left: 50%;
+  max-height: 100%;
+  width: auto;
   transform: translate(-50%, -50%);
-  display: flex;
   color: white;
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  &:focus {
-    outline: none;
-  }
+  gap: 7vw;
   .txt {
-    min-width: 30vw;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 1rem;
+    h1 {
+      line-height: 100%;
+      margin-bottom: 0;
+    }
+    > svg {
+      height: 56px;
+    }
   }
   .frame {
+    max-height: 90vh;
+    height: 100%;
     position: relative;
     aspect-ratio: 1314 / 2661;
     display: grid;
@@ -120,5 +136,8 @@ const Content = styled(motion.div)`
       will-change: auto;
       border-radius: 8px;
     }
+  }
+  form {
+    display: flex;
   }
 `

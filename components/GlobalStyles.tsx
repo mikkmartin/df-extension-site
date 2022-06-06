@@ -21,7 +21,7 @@ export const GlobalStyles = createGlobalStyle`
     --background: #282C34;
     --background-l2: #32363E;
     --error: #fa755a;
-    --input-border-radius: 2px;
+    --input-border-radius: 4px;
   }
   body, #__next {
     background: var(--background);
@@ -61,19 +61,21 @@ export const GlobalStyles = createGlobalStyle`
   }
   button {
     border: none;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     color: inherit;
     padding: 1rem 2rem;
     border-radius: 99rem;
-    font-size: 1.25rem;
+    font-family: inherit;
+    font-size: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
     gap: .5rem;
+    line-height: 1.5rem;
     cursor: pointer;
     &:hover, &:focus {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
       outline: none;
     }
     &:active {
@@ -82,6 +84,32 @@ export const GlobalStyles = createGlobalStyle`
     }
     svg {
       margin-left: -1rem;
+    }
+  }
+  form {
+    display: flex;
+    gap: 4px;
+    input {
+      height: 4.5rem;
+      padding: 0 1rem 0 2rem;
+      border: none;
+      border-radius: var(--input-border-radius);
+      display: flex;
+      gap: 4px;
+      width: 25rem;
+      font-family: inherit;
+      font-size: 1.5rem;
+      text-overflow: ellipsis;
+      &:focus {
+        outline: none;
+      }
+    }
+    button[type=submit] {
+      background: rgba(var(--highlight), 1);
+      border-radius: var(--input-border-radius);
+      height: 4.5rem;
+      padding: 0 3rem;
+      font-weight: 600;
     }
   }
 `

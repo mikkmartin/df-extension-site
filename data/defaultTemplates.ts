@@ -10,11 +10,11 @@ export const defaultTemplates = [
   },
   {
     name: 'Levila.ee',
-    description: 'Levila artiklitest story piltide looja.',
+    description: 'Loe. Kuula. Vaata. Levila artiklitest story piltide looja.',
     images: [
-      { id: 'd54Vs', src: 'story-levila-1.png', url: '' },
-      { id: '9usOA', src: 'story-levila-2.png', url: '' },
-      { id: 'g6a3S', src: 'story-levila-3.png', url: '' },
+      { id: 'd54Vs', src: 'story-levila-1.png', url: 'https://www.levila.ee/tekstid/kirjutan-teile-ukrainast' },
+      { id: '9usOA', src: 'story-levila-2.png', url: 'https://www.levila.ee/tekstid/levila-avas-veebipoe' },
+      { id: 'g6a3S', src: 'story-levila-3.png', url: 'https://www.levila.ee/video/mereprugila' },
     ],
   },
   {
