@@ -31,7 +31,7 @@ const Story: FC<Props> = ({ id, src, description }) => {
             shown: { opacity: 1 },
           }}>
           <Dialog.Close>All templates</Dialog.Close>
-          <h1>Template title</h1>
+          <h2>Template title</h2>
           <p>{description}</p>
           <ChromeWebstore />
         </motion.div>

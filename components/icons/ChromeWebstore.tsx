@@ -1,5 +1,5 @@
 export const ChromeWebstore = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="139" height="39" viewBox="0 0 139 39">
+    <svg xmlns="http://www.w3.org/2000/svg" height="64" viewBox="0 0 139 39">
     <path
       d="M 0 6 C 0 2.686 2.686 0 6 0 L 133 0 C 136.314 0 139 2.686 139 6 L 139 33 C 139 36.314 136.314 39 133 39 L 6 39 C 2.686 39 0 36.314 0 33 Z"
       fill="hsl(0, 0%, 0%)"></path>

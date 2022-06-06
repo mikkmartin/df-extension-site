@@ -16,7 +16,7 @@ export const GlobalStyles = createGlobalStyle`
   }
   :root {
     font-family: ${fontStack};
-    font-size: 16px;
+    font-size: 62.5%; /*10px*/
     --highlight: 0, 122, 255;
     --background: #282C34;
     --background-l2: #32363E;
@@ -26,6 +26,11 @@ export const GlobalStyles = createGlobalStyle`
   body, #__next {
     background: var(--background);
     color: white;
+    line-height: 1.75;
+  }
+  p {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
   }
   h1, h2, h3, h4, h5 {
     margin: 3rem 0 1.38rem;
@@ -34,13 +39,12 @@ export const GlobalStyles = createGlobalStyle`
   }
   h1 {
     margin-top: 0;
-    font-size: 3.052rem;
+    font-size: 7.594rem;
   }
-  h2 {font-size: 2.441rem;}
-  h3 {font-size: 1.953rem;}
-  h4 {font-size: 1.563rem;}
-  h5 {font-size: 1.25rem;}
-  small, .text_small {font-size: 0.8rem;}
+  h2 {font-size: 5.063rem;}
+  h3 {font-size: 3.375rem;}
+  h4 {font-size: 2.25rem;}
+  h5 {font-size: 1.5rem;}
   @media (max-width: 768px) {
     &:root {
       font-size: 75%;
