@@ -20,15 +20,12 @@ type Props = {
 const Story: FC<Props> = ({ id, src, name, url, description }) => {
   return (
     <Dialog.Content forceMount asChild>
-      <Content key="content">
+      <Content key="content" initial="hidden" animate="shown" exit="hidden">
         <motion.div
           key="txt"
           className="txt"
-          initial="hidden"
-          animate="shown"
-          exit="hidden"
           style={{ zIndex: 2 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.2, staggerChildren: 0.025 }}
           variants={{
             hidden: { opacity: 0 },
             shown: { opacity: 1 },
@@ -37,21 +34,45 @@ const Story: FC<Props> = ({ id, src, name, url, description }) => {
             <Chevron dir="left" />
             Templates
           </Dialog.Close>
-          <h1>{name} story</h1>
-          <p>{description}</p>
-          <form onSubmit={ev => ev.preventDefault()}>
+          <motion.h2
+            transition={fast}
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              shown: { opacity: 1, y: 0 },
+            }}>
+            {name} story
+          </motion.h2>
+          <motion.p
+            transition={fast}
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              shown: { opacity: 1, y: 0 },
+            }}>
+            {description}
+          </motion.p>
+          <motion.form
+            transition={fast}
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              shown: { opacity: 1, y: 0 },
+            }}
+            onSubmit={ev => ev.preventDefault()}>
             <input type="text" placeholder={url} />
             <button type="submit">Generate</button>
-          </form>
-          <ChromeWebstore />
+          </motion.form>
+          <motion.div
+            transition={fast}
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              shown: { opacity: 1, y: 0 },
+            }}>
+            <ChromeWebstore />
+          </motion.div>
         </motion.div>
         <motion.div
           key="frame"
           className="frame"
           layoutId={id}
-          initial="hidden"
-          animate="shown"
-          exit="hidden"
           transition={{ default: fast, opacity: { duration: 0 } }}
           variants={{
             hidden: { opacity: 0 },
@@ -95,12 +116,19 @@ const Content = styled(motion.div)`
     flex-direction: column;
     align-items: start;
     gap: 1rem;
-    h1 {
+    h2 {
       line-height: 100%;
-      margin-bottom: 0;
+      margin: 0;
     }
-    > svg {
-      height: 56px;
+    p {
+      margin-bottom: 2rem;
+    }
+    div > svg {
+      height: 48px;
+      width: auto;
+    }
+    button {
+      margin-left: -8px;
     }
   }
   .frame {

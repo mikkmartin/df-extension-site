@@ -23,8 +23,17 @@ export const Layout = ({ children }) => {
     <Container>
       <div className="header">
         <h4>DesignFactory</h4>
-        <h1>Story templates</h1>
-        <ChromeWebstore />
+        <h1>Story generator</h1>
+        <a
+          href="https://chrome.google.com/webstore/detail/designfactory-story-gener/glbablocmmdpnbcpkbpgioednikkldkp"
+          target="_blank">
+          <ChromeWebstore />
+        </a>
+        <img src="arrow.svg" />
+        <p>
+          Create stories from websites. Download the extension for chrome and create images for your
+          social media with a single click. Designs are imported from figma.
+        </p>
       </div>
       <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
         <AnimatePresence initial={false}>
@@ -62,26 +71,38 @@ const Container = styled.div`
     justify-content: space-between;
     grid-template-areas:
       'title chrome'
-      'subtitle chrome';
-    padding: 3vh 0;
+      'subtitle chrome'
+      'description arrow';
+    padding: 4vh 0 0;
     h1,
     h4 {
       line-height: 100%;
-      margin: 0;
       padding: 0;
     }
     h4 {
       place-self: end start;
       opacity: 0.5;
+      margin: 0;
     }
-    svg {
+    a {
       grid-area: chrome;
       height: 56px;
-      width: auto;
       margin: auto;
-      @media (max-width: 768px) {
-        height: 42px;
+      place-self: end;
+      svg {
+        @media (max-width: 768px) {
+          height: 42px;
+        }
       }
+    }
+    p {
+      max-width: 50rem;
+      opacity: 0.65;
+    }
+    img {
+      margin-top: -1rem;
+      grid-area: arrow;
+      margin-left: auto;
     }
   }
 `

@@ -1,13 +1,13 @@
 export const defaultTemplates = [
-  {
-    name: 'Reddit.com',
-    description: '',
-    images: [
-      { id: 'pb4jf', src: 'story-reddit-1.png', url: '' },
-      { id: 'T8njW', src: 'story-reddit-1.png', url: '' },
-      { id: 'xedyt', src: 'story-reddit-1.png', url: '' },
-    ],
-  },
+  // {
+  //   name: 'Reddit.com',
+  //   description: '',
+  //   images: [
+  //     { id: 'pb4jf', src: 'story-reddit-1.png', url: '' },
+  //     { id: 'T8njW', src: 'story-reddit-1.png', url: '' },
+  //     { id: 'xedyt', src: 'story-reddit-1.png', url: '' },
+  //   ],
+  // },
   {
     name: 'Levila.ee',
     description: 'Loe. Kuula. Vaata. Levila artiklitest story piltide looja.',
@@ -27,7 +27,7 @@ export const defaultTemplates = [
   },
   {
     name: 'Edasi.ee',
-    description: '',
+    description: 'Story templates for Edasi: Innustav ja hariv ajakiri.',
     images: [
       {
         id: '3PwYR',
@@ -48,7 +48,7 @@ export const defaultTemplates = [
   },
   {
     name: 'Muurileht.ee',
-    description: '',
+    description: 'Story templates for Müürileht.',
     images: [
       {
         id: 'IC2cN',
