@@ -86,21 +86,34 @@ const Content = styled(motion.div)`
   }
   .frame {
     position: relative;
+    aspect-ratio: 1314 / 2661;
+    display: grid;
+    place-items: start center;
+    padding: 16% 5.5%;
     &::before {
       content: '';
       position: absolute;
       inset: 0;
-      margin: -8rem -2rem;
-      padding: 8rem 2rem;
-      background-image: url('phone.png');
+      background-image: url('phone2.png');
       background-size: cover;
       z-index: -1;
       opacity: 1;
     }
+    &::after {
+      content: '';
+      position: absolute;
+      aspect-ratio: 540 / 1170;
+      inset: 2.2% 5.65%;
+      background-image: url('ig-overlay.png');
+      background-size: cover;
+      opacity: 1;
+    }
     img {
+      width: 100%;
       max-width: 540px;
       height: auto;
       will-change: auto;
+      border-radius: 8px;
     }
   }
 `
