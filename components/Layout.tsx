@@ -22,7 +22,7 @@ export const Layout = ({ children }) => {
   return (
     <Container>
       <div className="header">
-        <h4>DesignFactory</h4>
+        <h5>DesignFactory</h5>
         <h1>Story generator</h1>
         <a
           href="https://chrome.google.com/webstore/detail/designfactory-story-gener/glbablocmmdpnbcpkbpgioednikkldkp"
@@ -63,46 +63,57 @@ export const Layout = ({ children }) => {
 }
 
 const Container = styled.div`
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
   padding: 0 1rem 6vh 1rem;
   .header {
     display: grid;
     justify-content: space-between;
+    grid-template-columns: 1fr auto;
     grid-template-areas:
       'title chrome'
       'subtitle chrome'
       'description arrow';
-    padding: 4vh 0 0;
+    padding: 3vw 0 0;
     h1,
-    h4 {
+    h5 {
       line-height: 100%;
-      padding: 0;
+      margin: 0;
     }
-    h4 {
+    h5 {
       place-self: end start;
       opacity: 0.5;
-      margin: 0;
+      margin-bottom: 3px;
     }
     a {
       grid-area: chrome;
       height: 56px;
-      margin: auto;
       place-self: end;
       svg {
-        @media (max-width: 768px) {
-          height: 42px;
-        }
+        height: 100%;
+        width: auto;
+      }
+      @media (max-width: 768px) {
+        height: 40px;
       }
     }
     p {
-      max-width: 50rem;
+      margin-top: 1rem;
+      max-width: 30rem;
       opacity: 0.65;
+      grid-area: 3 / 1 span 2;
+      @media (max-width: 768px) {
+        grid-column-start: 1;
+        grid-column-end: 3;
+      }
     }
     img {
-      margin-top: -1rem;
+      margin-top: 1rem;
       grid-area: arrow;
       margin-left: auto;
+      @media (max-width: 768px) {
+        display: none;
+      }
     }
   }
 `
@@ -150,7 +161,7 @@ const TempalateRowGrid = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto;
   grid-template-areas: 'title title title';
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
   h4 {
     grid-area: title;
   }

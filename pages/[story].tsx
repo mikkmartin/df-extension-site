@@ -34,14 +34,14 @@ const Story: FC<Props> = ({ id, src, name, url, description }) => {
             <Chevron dir="left" />
             Templates
           </Dialog.Close>
-          <motion.h2
+          <motion.h1
             transition={fast}
             variants={{
               hidden: { opacity: 0, y: 50 },
               shown: { opacity: 1, y: 0 },
             }}>
             {name} story
-          </motion.h2>
+          </motion.h1>
           <motion.p
             transition={fast}
             variants={{
@@ -110,18 +110,20 @@ const Content = styled(motion.div)`
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 7vw;
+  gap: 5vmax;
   .txt {
     display: flex;
     flex-direction: column;
     align-items: start;
     gap: 1rem;
-    h2 {
+    min-width: 25rem;
+    h1 {
       line-height: 100%;
       margin: 0;
     }
     p {
       margin-bottom: 2rem;
+      margin: 0;
     }
     div > svg {
       height: 48px;

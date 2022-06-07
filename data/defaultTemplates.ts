@@ -1,13 +1,25 @@
 export const defaultTemplates = [
-  // {
-  //   name: 'Reddit.com',
-  //   description: '',
-  //   images: [
-  //     { id: 'pb4jf', src: 'story-reddit-1.png', url: '' },
-  //     { id: 'T8njW', src: 'story-reddit-1.png', url: '' },
-  //     { id: 'xedyt', src: 'story-reddit-1.png', url: '' },
-  //   ],
-  // },
+  {
+    name: 'Reddit.com',
+    description: '',
+    images: [
+      {
+        id: 'pb4jf',
+        src: 'story-reddit-1.png',
+        url: 'https://www.reddit.com/r/aww/comments/v2flpz/this_is_so_cute/',
+      },
+      {
+        id: 'T8njW',
+        src: 'story-reddit-2.png',
+        url: 'https://www.reddit.com/r/reactjs/comments/v60ng2/i_made_a_fullstack_simple_todoapp/',
+      },
+      {
+        id: 'xedyt',
+        src: 'story-reddit-3.png',
+        url: 'https://www.reddit.com/r/aww/comments/t5bm72/best_day_ever/',
+      },
+    ],
+  },
   {
     name: 'Levila.ee',
     description: 'Loe. Kuula. Vaata. Levila artiklitest story piltide looja.',
