@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import { defaultTemplates } from 'data/defaultTemplates'
 import { usePrevious } from 'react-use'
+import { media } from 'components/GlobalStyles'
 
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
@@ -32,7 +33,7 @@ export const Layout = ({ children }) => {
         <img src="arrow.svg" />
         <p>
           Create stories from websites. Download the extension for chrome and create images for your
-          social media with a single click. Designs are imported from figma.
+          social media with a single click.
         </p>
       </div>
       <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
@@ -93,27 +94,27 @@ const Container = styled.div`
         height: 100%;
         width: auto;
       }
-      @media (max-width: 768px) {
+      ${media.lessThan('medium')`
         height: 40px;
-      }
+      `}
     }
     p {
       margin-top: 1rem;
       max-width: 30rem;
       opacity: 0.65;
       grid-area: 3 / 1 span 2;
-      @media (max-width: 768px) {
+      ${media.lessThan('medium')`
         grid-column-start: 1;
         grid-column-end: 3;
-      }
+      `}
     }
     img {
       margin-top: 1rem;
       grid-area: arrow;
       margin-left: auto;
-      @media (max-width: 768px) {
+      ${media.lessThan('medium')`
         display: none;
-      }
+      `}
     }
   }
 `

@@ -1,12 +1,10 @@
 import { createGlobalStyle } from 'styled-components'
+import * as _media from "styled-media-query";
+
+export const media = _media.default;
 
 export const fontStack =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";'
-
-export const breakpoints = {
-  xs: '0px',
-  sm: '576px',
-}
 
 export const GlobalStyles = createGlobalStyle`
   * {
