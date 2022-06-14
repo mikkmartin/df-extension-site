@@ -1,7 +1,32 @@
 import { createGlobalStyle } from 'styled-components'
-import * as _media from "styled-media-query";
+import * as _media from 'styled-media-query'
+import { useWindowSize } from 'react-use'
 
-export const media = _media.default;
+const defaultBreakpoints = {
+  huge: 1440,
+  large: 1170,
+  medium: 768,
+  small: 450,
+}
+
+type Point = keyof typeof defaultBreakpoints
+type UseMedia = () => {
+  lessThan: (p: Point) => boolean
+  greaterThan: (p: Point) => boolean
+  between: (p1: Point, p2: Point) => boolean
+}
+
+export const useMedia: UseMedia = () => {
+  const { width } = useWindowSize()
+  return {
+    lessThan: (p: Point) => width < defaultBreakpoints[p],
+    greaterThan: (p: Point) => width > defaultBreakpoints[p],
+    between: (p1: Point, p2: Point) =>
+      width > defaultBreakpoints[p1] && width < defaultBreakpoints[p2],
+  }
+}
+
+export const media = _media.default
 
 export const fontStack =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";'
@@ -11,6 +36,7 @@ export const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    outline: none;
   }
   :root {
     font-family: ${fontStack};

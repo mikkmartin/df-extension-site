@@ -105,6 +105,7 @@ const Container = styled.div`
 
 const animations = {
   whileHover: { scale: 1.03 },
+  whileTap: { scale: 0.95, transition: { duration: 0 } },
 }
 type Props = {
   site: string
@@ -126,15 +127,20 @@ const TempalateRow: FC<Props> = ({ site, images }) => {
         const zIndex = id === previousQuery || id === query ? 1 : 'initial'
 
         return (
-          <Link key={i} href={id} scroll={false}>
-            <a>
-              <Dialog.Trigger key={i} asChild>
-                <motion.div className="frame" transition={fast} layoutId={id} style={{ zIndex }}>
-                  <motion.img {...animations} src={src} alt="" />
-                </motion.div>
-              </Dialog.Trigger>
-            </a>
-          </Link>
+          // <Link key={i} href={id} scroll={false}>
+          //   <a>
+          <Dialog.Trigger key={i} asChild>
+            <motion.div
+              className="frame"
+              onTap={() => router.push(id, undefined, { scroll: false })}
+              transition={fast}
+              layoutId={id}
+              style={{ zIndex }}>
+              <motion.img {...animations} src={src} alt="" />
+            </motion.div>
+          </Dialog.Trigger>
+          //   </a>
+          // </Link>
         )
       })}
     </TempalateRowGrid>
@@ -149,6 +155,8 @@ const TempalateRowGrid = styled.div`
   grid-gap: 0.5rem;
   h4 {
     grid-area: title;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
   }
   img {
     cursor: pointer;

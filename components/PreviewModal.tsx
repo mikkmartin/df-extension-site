@@ -1,10 +1,18 @@
-import { FC, useEffect, createContext, useContext } from 'react'
+import { FC, useEffect, createContext, useContext, useState, Dispatch, SetStateAction } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { AnimatePresence, useAnimation } from 'framer-motion'
+import {
+  AnimatePresence,
+  useAnimation,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  transform,
+} from 'framer-motion'
 import styled from 'styled-components'
-import { motion } from 'framer-motion'
+import { motion, PanInfo } from 'framer-motion'
 import { Close } from 'components/icons/Close'
 import { media } from 'components/GlobalStyles'
+import { useMedia } from 'components/GlobalStyles'
 
 type RootProps = {
   open: boolean
@@ -13,9 +21,11 @@ type RootProps = {
 }
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
-const RootContext = createContext<{ setOverlayOpacity: (progress: number) => void }>(
-  undefined as any
-)
+const RootContext = createContext<{
+  setOverlayOpacity: (progress: number) => void
+  setOpen: (state: boolean) => void
+  open: boolean
+}>(undefined as any)
 
 export const Root: FC<RootProps> = ({ children, open, onOpenChange }) => {
   const overlayOpacity = useAnimation()
@@ -31,6 +41,8 @@ export const Root: FC<RootProps> = ({ children, open, onOpenChange }) => {
     <RootContext.Provider
       value={{
         setOverlayOpacity,
+        setOpen: state => onOpenChange(state),
+        open,
       }}>
       <Dialog.Root open={open} onOpenChange={onOpenChange}>
         <AnimatePresence initial={false}>
@@ -102,24 +114,94 @@ export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
   )
 }
 
+const isBrowser = typeof window !== 'undefined'
+
 export const Image = (props: any) => {
+  const threshold = isBrowser ? window.innerHeight / 8 : 200
+  const imageAnimation = useAnimation()
+  const y = useMotionValue(0)
+  const isMobile = useMedia().lessThan('large')
+  const _scale = useTransform(
+    y,
+    [-threshold * 4, -threshold - 0.1, -threshold, 0, threshold, threshold + 0.1, threshold * 4],
+    [0.25, 0.75, 0.9, 1, 0.9, 0.75, 0.25]
+  )
+  const scale = useSpring(_scale, { stiffness: 2000, damping: 70, mass: 1 })
+  const { setOverlayOpacity, setOpen, open } = useModal()
+
+  useEffect(() => {
+    if (!isMobile) imageAnimation.set({ y: 0 })
+  }, [imageAnimation, isMobile])
+
+  const handleDragStart = () => {
+    //panelAnimation.start('hidden')
+    //isDragging.current = true
+  }
+
+  const handleDrag = (_, info: PanInfo) => {
+    const { offset } = info
+    const shouldClose = offset.y > threshold || offset.y < -threshold
+    //if (isOpen) updateOverlay(offset.y)
+  }
+
+  const handleUpdate = pos => {
+    updateOverlay(pos.y)
+    if (open) updateOverlay(pos.y)
+  }
+
+  const updateOverlay = y => {
+    y = Math.abs(y)
+    const opacity = transform(y, [0, threshold, threshold + 0.1], [1, 0.5, 0.25])
+    setOverlayOpacity(opacity)
+  }
+
+  const handleDragEnd = (_, info: PanInfo) => {
+    //setTimeout(() => (isDragging.current = false), 1)
+    const { velocity, offset } = info
+    const shouldClose = Math.abs(velocity.y) > 20 || Math.abs(offset.y) > threshold
+    if (shouldClose) {
+      console.log('should close')
+      setOpen(false)
+    } else {
+      imageAnimation.start({ y: 0 })
+      //panelAnimation.start('visible')
+    }
+  }
+
+  const handleTap = (ev, info) => {
+    // if (isDragging.current) return
+    // if (showPanel.current) {
+    //   panelAnimation.start('hidden')
+    //   showPanel.current = false
+    // } else {
+    //   panelAnimation.start('visible')
+    //   showPanel.current = true
+    // }
+  }
+
   return (
     <StyledImage
       {...props}
       transition={fast}
-      drag="y"
+      drag={isMobile ? true : false}
+      dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.2}
-      // animate={imageAnimation}
-      // onDragStart={handleDragStart}
-      // onDrag={handleDrag}
-      // onDragEnd={handleDragEnd}
-      // onUpdate={handleUpdate}
-      // onTap={handleTap}
+      animate={imageAnimation}
+      onDragStart={handleDragStart}
+      onDrag={handleDrag}
+      onDragEnd={handleDragEnd}
+      onUpdate={handleUpdate}
+      onTap={handleTap}
+      style={{ y, scale }}
     />
   )
 }
 
 const StyledContent = styled(motion.div)`
+  z-index: 3;
+  ${media.lessThan('large')`
+    display: content;
+  `}
   ${media.greaterThan('large')`
     position: fixed;
     display: flex;
@@ -130,16 +212,14 @@ const StyledContent = styled(motion.div)`
     max-height: 80vh;
     flex-direction: row-reverse;
   `}
-  ${media.lessThan('large')`
-    display: content;
-  `}
 `
 const StyledImage = styled(motion.img)`
+  z-index: 3;
   ${media.lessThan('large')`
     position: fixed;
     width: auto;
     max-width: 100%;
-    max-height: 100%;
+    max-height: calc(100% - 8px);
     inset: 0;
     margin: auto;
     border-radius: 8px;
@@ -231,8 +311,12 @@ const StyledPanel = styled(motion.div)`
   `}
 `
 const Overlay = styled(motion.div)`
-  background-color: rgba(50, 55, 65, 0.83);
-  backdrop-filter: blur(32px) saturate(180%);
+  z-index: 1;
   position: fixed;
   inset: 0;
+  background-color: #282c34;
+  ${media.greaterThan('large')`
+    background-color: rgba(50, 55, 65, 0.83);
+    backdrop-filter: blur(32px) saturate(180%);
+  `}
 `

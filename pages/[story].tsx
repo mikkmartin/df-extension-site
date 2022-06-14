@@ -22,7 +22,7 @@ const Story: FC<Props> = ({ id, src, name, url, description }) => {
   return (
     <Modal.Content>
       <Modal.Image layoutId={id} src={src} />
-      <Modal.Panel title={name} description={description} placeholder={url} />
+      {/* <Modal.Panel title={name} description={description} placeholder={url} /> */}
     </Modal.Content>
   )
 }
