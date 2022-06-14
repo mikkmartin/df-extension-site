@@ -1,6 +1,5 @@
 import { ChromeWebstore } from './icons/ChromeWebstore'
 import * as Dialog from '@radix-ui/react-dialog'
-import { AnimatePresence } from 'framer-motion'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
@@ -9,6 +8,7 @@ import { FC } from 'react'
 import { defaultTemplates } from 'data/defaultTemplates'
 import { usePrevious } from 'react-use'
 import { media } from 'components/GlobalStyles'
+import * as Modal from 'components/PreviewModal'
 
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
 
@@ -36,29 +36,13 @@ export const Layout = ({ children }) => {
           social media with a single click.
         </p>
       </div>
-      <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <Dialog.Overlay key="o" forceMount asChild>
-              <Overlay
-                key="overlay"
-                initial="hidden"
-                animate="shown"
-                exit="hidden"
-                transition={{ duration: 0.2 }}
-                variants={{
-                  hidden: { opacity: 0 },
-                  shown: { opacity: 1 },
-                }}
-              />
-            </Dialog.Overlay>
-          )}
-          {children}
-        </AnimatePresence>
+
+      <Modal.Root open={isOpen} onOpenChange={handleOpenChange}>
+        {children}
         {defaultTemplates.map(({ name, images }, i) => (
           <TempalateRow key={i} site={name} images={images} />
         ))}
-      </Dialog.Root>
+      </Modal.Root>
     </Container>
   )
 }
@@ -175,11 +159,4 @@ const TempalateRowGrid = styled.div`
       filter: brightness(1.1);
     }
   }
-`
-
-const Overlay = styled(motion.div)`
-  background-color: rgba(50, 55, 65, 0.83);
-  backdrop-filter: blur(32px) saturate(180%);
-  position: fixed;
-  inset: 0;
 `
