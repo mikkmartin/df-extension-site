@@ -226,11 +226,12 @@ const StyledImage = styled(motion.div)`
   z-index: 3;
   ${media.lessThan('large')`
     position: fixed;
-    max-width: 100%;
+    max-width: calc(100% - 16px);
     max-height: calc(100% - 8px);
     width: auto;
     inset: 0;
     margin: auto;
+    aspect-ratio: 1080 / 1920;
     img {
       width: 100%;
       height: 100%;
@@ -238,6 +239,7 @@ const StyledImage = styled(motion.div)`
   `}
   ${media.greaterThan('large')`
     position: relative;
+    margin-top: -5%;
     &::before {
       content: '';
       z-index: -1;
@@ -262,7 +264,7 @@ const StyledImage = styled(motion.div)`
     }
     img {
       object-fit: contain;
-      max-height: 80vh;
+      max-height: 75vh;
       height: 50rem;
       width: auto;
     }
@@ -273,6 +275,7 @@ const StyledImage = styled(motion.div)`
 `
 const StyledPanel = styled(motion.div)`
   ${media.lessThan('large')`
+    display: none;
     background: white;
     border-radius: 24px 24px 0 0;
     box-shadow: 0 200px 0 rgba(255, 255, 255, 1), 0 0 32px rgba(0, 0, 0, 0.1);
