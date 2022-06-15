@@ -123,10 +123,7 @@ const TempalateRow: FC<Props> = ({ site, images }) => {
       <h4>{site}</h4>
       {images.map(({ src, id }, i) => {
         const zIndex = id === previousQuery || id === query ? 1 : 'initial'
-
         return (
-          // <Link key={i} href={id} scroll={false}>
-          //   <a>
           <Dialog.Trigger key={i} asChild>
             <motion.div
               className="frame"
@@ -137,8 +134,6 @@ const TempalateRow: FC<Props> = ({ site, images }) => {
               <motion.img {...animations} src={src} alt="" />
             </motion.div>
           </Dialog.Trigger>
-          //   </a>
-          // </Link>
         )
       })}
     </TempalateRowGrid>

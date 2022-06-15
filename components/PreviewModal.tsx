@@ -77,7 +77,7 @@ type ContentProps = {
 
 export const Content: FC<ContentProps> = ({ children }) => {
   return (
-    <Dialog.Content forceMount asChild>
+    <Dialog.Content forceMount asChild onOpenAutoFocus={ev => ev.preventDefault()}>
       <StyledContent>{children}</StyledContent>
     </Dialog.Content>
   )
@@ -90,18 +90,18 @@ type PanelProps = {
 }
 
 export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
-  const {} = useModal()
-  const panelAnimation = useAnimation()
+  const isMobile = useMedia().lessThan('large')
+  // const panelAnimation = useAnimation()
 
   return (
     <StyledPanel
-      transition={{ duration: 0.1 }}
+      transition={fast}
       initial="hidden"
       animate="visible"
       exit="hidden"
       variants={{
         visible: { opacity: 1, y: 0 },
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity: 0, y: isMobile ? '120%' : '10%' },
       }}>
       <Dialog.Close className="close">
         <Chevron dir="left" />
@@ -291,9 +291,7 @@ const StyledPanel = styled(motion.div)`
     width: 100%;
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    //box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
     padding: 3px;
-    margin: -4px;
     backdrop-filter: blur(42px) saturate(160%);
     input {
       height: 48px;
@@ -301,7 +299,6 @@ const StyledPanel = styled(motion.div)`
       flex-grow: 1;
       padding-left: 16px;
       text-overflow: ellipsis;
-      border-radius: var(--border-radius);
       border: none;
       background: none;
       font-size: 16px;
@@ -320,7 +317,7 @@ const StyledPanel = styled(motion.div)`
       color: white;
       border-radius: 4px;
       border: none;
-      font-size: 14px;
+      font-size: 12px;
       text-transform: uppercase;
       font-weight: bold;
       user-select: none;
@@ -328,42 +325,27 @@ const StyledPanel = styled(motion.div)`
   }
   ${media.lessThan('large')`
     z-index: 3;
-    background: #0000001b;
-    border-radius: 24px 24px 0 0;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 24px 16px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    color: black;
-    h2 {
-      font-size: 24px;
-      margin: 0;
+    padding: 8px;
+    .inputs {
+      background-color: rgba(235, 235, 235, 0.85);
+      padding: 2px;
+      box-shadow: 0px 8px 32px -4px rgba(0, 0, 0, 0.5), inset 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+      border-radius: 11px;
+      input {
+        &::placeholder {
+          color: rgba(0, 0, 0, 0.35);
+        }
+      }
+      button.cta {
+        border-radius: 9px;
+      }
     }
-    button.close {
-      width: 40px;
-      height: 40px;
-      transform: translate(4px, -4px);
-      border-radius: 99rem;
-      border: none;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0);
-      display: grid;
-      place-items: center;
-      opacity: 0.5;
-      svg {
-        width: 20px;
-      }
-      &:focus {
-        outline: none;
-      }
-      &:active {
-        background: white;
-        color: black;
-        opacity: 1;
-      }
+    h2, p, button.close, svg {
+      display: none;
     }
   `}
   ${media.greaterThan('large')`
@@ -376,7 +358,6 @@ const StyledPanel = styled(motion.div)`
     h2 {
       margin: 0;
       line-height: 100%;
-      //margin: 1rem 0 0;
     }
     p {
       color: rgba(255, 255, 255, 0.5);
