@@ -1,4 +1,4 @@
-import { FC, useEffect, createContext, useContext, useState, Dispatch, SetStateAction } from 'react'
+import { FC, useEffect, createContext, useContext } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import {
   AnimatePresence,
@@ -13,14 +13,13 @@ import { motion, PanInfo } from 'framer-motion'
 import { Close } from 'components/icons/Close'
 import { media } from 'components/GlobalStyles'
 import { useMedia } from 'components/GlobalStyles'
+import { fast } from 'constants/transitions'
 
 type RootProps = {
   open: boolean
   children: React.ReactNode
   onOpenChange: (state: boolean) => void
 }
-const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
-// const fast = { duration: 1 }
 
 const RootContext = createContext<{
   setOverlayOpacity: (progress: number) => void
@@ -275,10 +274,9 @@ const StyledImage = styled(motion.div)`
 `
 const StyledPanel = styled(motion.div)`
   ${media.lessThan('large')`
-    display: none;
-    background: white;
+    z-index: 3;
+    background: #0000001b;
     border-radius: 24px 24px 0 0;
-    box-shadow: 0 200px 0 rgba(255, 255, 255, 1), 0 0 32px rgba(0, 0, 0, 0.1);
     position: fixed;
     bottom: 0;
     left: 0;
@@ -344,7 +342,7 @@ const StyledPanel = styled(motion.div)`
       }
       button.cta {
         flex-grow: auto;
-        background: blue;
+        background: var(--highlight);
         padding: 0 24px;
         color: white;
         border-radius: 4px;

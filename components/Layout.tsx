@@ -3,14 +3,12 @@ import * as Dialog from '@radix-ui/react-dialog'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import { FC } from 'react'
 import { defaultTemplates } from 'data/defaultTemplates'
 import { usePrevious } from 'react-use'
 import { media } from 'components/GlobalStyles'
 import * as Modal from 'components/PreviewModal'
-
-const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
+import { fast } from 'constants/transitions'
 
 export const Layout = ({ children }) => {
   const router = useRouter()

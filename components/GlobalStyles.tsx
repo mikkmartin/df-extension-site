@@ -41,7 +41,7 @@ export const GlobalStyles = createGlobalStyle`
   :root {
     font-family: ${fontStack};
     font-size: 100%; /*16px*/
-    --highlight: 0, 122, 255;
+    --highlight: rgb(0, 122, 255);
     --background: #282C34;
     --background-l2: #32363E;
     --error: #fa755a;
