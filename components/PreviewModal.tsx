@@ -10,10 +10,11 @@ import {
 } from 'framer-motion'
 import styled from 'styled-components'
 import { motion, PanInfo } from 'framer-motion'
-import { Close } from 'components/icons/Close'
+import { Chevron } from 'components/icons/Chevron'
 import { media } from 'components/GlobalStyles'
 import { useMedia } from 'components/GlobalStyles'
 import { fast } from 'constants/transitions'
+import { ChromeWebstore } from 'components/icons/ChromeWebstore'
 
 type RootProps = {
   open: boolean
@@ -102,14 +103,25 @@ export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
         visible: { opacity: 1, y: 0 },
         hidden: { opacity: 0, y: 20 },
       }}>
-      <Dialog.Title>{title}</Dialog.Title>
       <Dialog.Close className="close">
-        <Close />
+        <Chevron dir="left" />
+        templates
       </Dialog.Close>
+      <Dialog.Title>Story template for {title}</Dialog.Title>
+      <p>
+        Template for generating stories from articles. Copy a {title.toLowerCase()} link to the
+        field below to create it automatically or download the browser add-on to create a webpage
+        directly.
+      </p>
       <div className="inputs">
         <input type="text" placeholder={placeholder} />
-        <button className="cta">Generate</button>
+        <button className="cta">Paste link</button>
       </div>
+      <a
+        href="https://chrome.google.com/webstore/detail/designfactory-story-gener/glbablocmmdpnbcpkbpgioednikkldkp"
+        target="_blank">
+        <ChromeWebstore />
+      </a>
     </StyledPanel>
   )
 }
@@ -218,7 +230,7 @@ const StyledContent = styled(motion.div)`
     transform: translate(-50%, -50%);
     max-height: 80vh;
     flex-direction: row-reverse;
-    gap: 5rem;
+    gap: 10vw;
   `}
 `
 const StyledImage = styled(motion.div)`
@@ -273,6 +285,47 @@ const StyledImage = styled(motion.div)`
   }
 `
 const StyledPanel = styled(motion.div)`
+  .inputs {
+    grid-area: 2 / 1 / span 1 / span 2;
+    display: flex;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    //box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
+    padding: 3px;
+    margin: -4px;
+    backdrop-filter: blur(42px) saturate(160%);
+    input {
+      height: 48px;
+      min-width: 100px;
+      flex-grow: 1;
+      padding-left: 16px;
+      text-overflow: ellipsis;
+      border-radius: var(--border-radius);
+      border: none;
+      background: none;
+      font-size: 16px;
+      &:focus {
+        outline: none;
+        color: white;
+      }
+      ::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+    }
+    button.cta {
+      flex-grow: auto;
+      background: var(--highlight);
+      padding: 0 24px;
+      color: white;
+      border-radius: 4px;
+      border: none;
+      font-size: 14px;
+      text-transform: uppercase;
+      font-weight: bold;
+      user-select: none;
+    }
+  }
   ${media.lessThan('large')`
     z-index: 3;
     background: #0000001b;
@@ -312,50 +365,30 @@ const StyledPanel = styled(motion.div)`
         opacity: 1;
       }
     }
-    .inputs {
-      grid-area: 2 / 1 / span 1 / span 2;
-      display: flex;
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.07);
-      border-radius: 4px;
-      //box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
-      padding: 3px;
-      margin: -4px;
-      backdrop-filter: blur(42px) saturate(160%);
-      input {
-        height: 42px;
-        min-width: 100px;
-        flex-grow: 1;
-        padding-left: 16px;
-        text-overflow: ellipsis;
-        border-radius: var(--border-radius);
-        border: none;
-        background: none;
-        font-size: 16px;
-        &:focus {
-          outline: none;
-          color: white;
-        }
-        &:placeholder {
-          color: rgba(255, 255, 255, 0.4);
-        }
-      }
-      button.cta {
-        flex-grow: auto;
-        background: var(--highlight);
-        padding: 0 24px;
-        color: white;
-        border-radius: 4px;
-        border: none;
-        font-size: 14px;
-        text-transform: uppercase;
-        font-weight: bold;
-        user-select: none;
-      }
-    }
   `}
   ${media.greaterThan('large')`
-    width: 20vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 30vw;
+    width: 30rem;
+    gap: 1rem;
+    h2 {
+      margin: 0;
+      line-height: 100%;
+      //margin: 1rem 0 0;
+    }
+    > button {
+      margin-left: -.2rem;
+      place-self: flex-start;
+    }
+    .inputs {
+      flex-grow: 0;
+    }
+    > svg {
+      place-self: flex-start;
+      height: 48px;
+    }
   `}
 `
 const Overlay = styled(motion.div)`
