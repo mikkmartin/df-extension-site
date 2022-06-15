@@ -91,7 +91,7 @@ type PanelProps = {
 
 export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
   const isMobile = useMedia().lessThan('large')
-  // const panelAnimation = useAnimation()
+  const panelAnimation = useAnimation()
 
   return (
     <StyledPanel
@@ -168,7 +168,7 @@ export const Image: FC<ImageProps> = ({ layoutId, src }) => {
 
   const updateOverlay = y => {
     y = Math.abs(y)
-    const opacity = transform(y, [0, threshold, threshold + 0.1], [1, 0.5, 0.25])
+    const opacity = transform(y, [0, threshold, threshold + 0.1], [1, 0.8, 0.35])
     setOverlayOpacity(opacity)
   }
 
