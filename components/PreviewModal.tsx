@@ -110,8 +110,8 @@ export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
       <Dialog.Title>Story template for {title}</Dialog.Title>
       <p>
         Template for generating stories from articles. Copy a {title.toLowerCase()} link to the
-        field below to create it automatically or download the browser add-on to create a webpage
-        directly.
+        field below to create it automatically or download the browser extension to create from
+        webpage a directly.
       </p>
       <div className="inputs">
         <input type="text" placeholder={placeholder} />
@@ -377,6 +377,9 @@ const StyledPanel = styled(motion.div)`
       margin: 0;
       line-height: 100%;
       //margin: 1rem 0 0;
+    }
+    p {
+      color: rgba(255, 255, 255, 0.5);
     }
     > button {
       margin-left: -.2rem;
