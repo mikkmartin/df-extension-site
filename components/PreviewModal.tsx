@@ -20,6 +20,7 @@ type RootProps = {
   onOpenChange: (state: boolean) => void
 }
 const fast = { type: 'spring', stiffness: 2000, damping: 120, mass: 1 }
+// const fast = { duration: 1 }
 
 const RootContext = createContext<{
   setOverlayOpacity: (progress: number) => void
@@ -116,7 +117,12 @@ export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
 
 const isBrowser = typeof window !== 'undefined'
 
-export const Image = (props: any) => {
+type ImageProps = {
+  layoutId: string
+  src: string
+}
+
+export const Image: FC<ImageProps> = ({ layoutId, src }) => {
   const threshold = isBrowser ? window.innerHeight / 8 : 200
   const imageAnimation = useAnimation()
   const y = useMotionValue(0)
@@ -181,7 +187,7 @@ export const Image = (props: any) => {
 
   return (
     <StyledImage
-      {...props}
+      layoutId={layoutId}
       transition={fast}
       drag={isMobile ? true : false}
       dragConstraints={{ left: 0, right: 0 }}
@@ -192,8 +198,9 @@ export const Image = (props: any) => {
       onDragEnd={handleDragEnd}
       onUpdate={handleUpdate}
       onTap={handleTap}
-      style={{ y, scale }}
-    />
+      style={{ y, scale }}>
+      <motion.img src={src} />
+    </StyledImage>
   )
 }
 
@@ -205,27 +212,64 @@ const StyledContent = styled(motion.div)`
   ${media.greaterThan('large')`
     position: fixed;
     display: flex;
+    align-items: center;
+    justify-content: center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 70%;
     max-height: 80vh;
     flex-direction: row-reverse;
+    gap: 5rem;
   `}
 `
-const StyledImage = styled(motion.img)`
+const StyledImage = styled(motion.div)`
   z-index: 3;
   ${media.lessThan('large')`
     position: fixed;
-    width: auto;
     max-width: 100%;
     max-height: calc(100% - 8px);
+    width: auto;
     inset: 0;
     margin: auto;
-    border-radius: 8px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   `}
   ${media.greaterThan('large')`
+    position: relative;
+    &::before {
+      content: '';
+      z-index: -1;
+      position: absolute;
+      aspect-ratio: 1314 / 2661;
+      top: -10%;
+      left: -5%;
+      width: 110%;
+      background-image: url('phone2.png');
+      background-size: cover;
+    }
+    &::after {
+      content: '';
+      z-index: 2;
+      position: absolute;
+      aspect-ratio: 540 / 1170;
+      inset: -7.3% 0%;
+      background-image: url('ig-overlay.png');
+      background-size: cover;
+      opacity: 1;
+      pointer-events: none;
+    }
+    img {
+      object-fit: contain;
+      max-height: 80vh;
+      height: 50rem;
+      width: auto;
+    }
   `}
+  img {
+    border-radius: 8px;
+  }
 `
 const StyledPanel = styled(motion.div)`
   ${media.lessThan('large')`
@@ -308,6 +352,9 @@ const StyledPanel = styled(motion.div)`
         user-select: none;
       }
     }
+  `}
+  ${media.greaterThan('large')`
+    width: 20vw;
   `}
 `
 const Overlay = styled(motion.div)`

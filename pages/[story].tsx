@@ -22,7 +22,7 @@ const Story: FC<Props> = ({ id, src, name, url, description }) => {
   return (
     <Modal.Content>
       <Modal.Image layoutId={id} src={src} />
-      {/* <Modal.Panel title={name} description={description} placeholder={url} /> */}
+      <Modal.Panel title={name} description={description} placeholder={url} />
     </Modal.Content>
   )
 }
@@ -375,9 +375,9 @@ const ContentDesktop = styled(motion.div)`
     max-height: 90vh;
     height: 100%;
     position: relative;
-    aspect-ratio: 1314 / 2661;
     display: grid;
     place-items: start center;
+    aspect-ratio: 1314 / 2661;
     padding: 18.75% 5.5%;
     &::before {
       content: '';
