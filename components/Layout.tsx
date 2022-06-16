@@ -8,7 +8,7 @@ import { defaultTemplates } from 'data/defaultTemplates'
 import { usePrevious } from 'react-use'
 import { media } from 'components/GlobalStyles'
 import * as Modal from 'components/PreviewModal'
-import { fast } from 'constants/transitions'
+import { fast } from 'lib/transitions'
 
 export const Layout = ({ children }) => {
   const router = useRouter()

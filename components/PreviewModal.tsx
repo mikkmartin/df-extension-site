@@ -13,7 +13,7 @@ import { motion, PanInfo } from 'framer-motion'
 import { Chevron } from 'components/icons/Chevron'
 import { media } from 'components/GlobalStyles'
 import { useMedia } from 'components/GlobalStyles'
-import { fast } from 'constants/transitions'
+import { fast } from 'lib/transitions'
 import { ChromeWebstore } from 'components/icons/ChromeWebstore'
 
 type RootProps = {

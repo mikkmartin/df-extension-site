@@ -1,5 +1,6 @@
 import { NextApiHandler } from 'next'
 import { Document } from 'fast-wasm-scraper'
+const { URLPattern } = require('urlpattern-polyfill')
 
 const handler: NextApiHandler = async (req, res) => {
   const protocol = req.headers['x-forwarded-proto'] || 'http'
@@ -11,18 +12,21 @@ const handler: NextApiHandler = async (req, res) => {
     fetch(url).then(res => res.text()),
   ])
 
+  const siteTemplates = templates.filter(({ urlpattern }) => new URLPattern(urlpattern).test(url))
+  const { urlpattern, selectors, name, slug } = siteTemplates[0]
+  const entries = Object.entries(selectors)
+
   const doc = new Document(rawHtml)
+  const $ = (q: string) => doc.root.query(q)
 
   const parsed = {
-    title: doc.root.query('article h1')[0].text()[0],
-    image: doc.root.query("meta[property='og:image']")[0].attributes.get('content'),
-    body: doc.root.query('article p')[0].text()[0],
-    media: doc.root.query('main nav:nth-child(1)')[0].text()[0],
+    title: $('article h1')[0].text()[0],
+    image: $("meta[property='og:image']")[0].attributes.get('content'),
+    body: $('article p')[0].text()[0],
+    media: $('main nav:nth-child(1)')[0].text()[0],
   }
 
-  console.log(parsed)
-
-  return res.json({ templates, parsed })
+  return res.json({ parsed, siteTemplates: siteTemplates[0] })
 }
 
 export default handler

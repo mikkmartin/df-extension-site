@@ -15,7 +15,8 @@
     "react-dom": "^18.1.0",
     "react-use": "^17.4.0",
     "styled-components": "^5.3.5",
-    "styled-media-query": "^2.1.2"
+    "styled-media-query": "^2.1.2",
+    "urlpattern-polyfill": "^5.0.3"
   },
   "devDependencies": {
     "@types/node": "17.0.36",
