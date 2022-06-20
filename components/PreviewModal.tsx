@@ -1,4 +1,4 @@
-import { FC, useEffect, createContext, useContext, ReactEventHandler } from 'react'
+import { FC, useEffect, createContext, useContext, ReactEventHandler, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import {
   AnimatePresence,
@@ -214,6 +214,9 @@ export const Image: FC<ImageProps> = ({ layoutId, src, loading, onLoad }) => {
     // }
   }
 
+  const isImage = src.includes('png')
+  const [muted, setMuted] = useState(true)
+
   return (
     <ImageContainer
       layoutId={layoutId}
@@ -228,7 +231,11 @@ export const Image: FC<ImageProps> = ({ layoutId, src, loading, onLoad }) => {
       onUpdate={handleUpdate}
       onTap={handleTap}
       style={{ y, scale }}>
-      <motion.img src={src} onLoad={onLoad} />
+      {isImage ? (
+        <motion.img src={src} onLoad={onLoad} />
+      ) : (
+        <video src={src} playsInline autoPlay loop muted={muted} onClick={() => setMuted(!muted)} />
+      )}
       {loading && <LoadingOverlay />}
     </ImageContainer>
   )
@@ -279,15 +286,15 @@ const StyledContent = styled(motion.div)`
 `
 const ImageContainer = styled(motion.div)`
   z-index: 3;
+  max-width: calc(100% - 16px);
+  max-height: calc(100% - 8px);
   ${media.lessThan('large')`
     position: fixed;
-    max-width: calc(100% - 16px);
-    max-height: calc(100% - 8px);
     width: auto;
     inset: 0;
     margin: auto;
     aspect-ratio: 1080 / 1920;
-    img {
+    img, video {
       width: 100%;
       height: 100%;
     }
@@ -317,7 +324,7 @@ const ImageContainer = styled(motion.div)`
       opacity: 1;
       pointer-events: none;
     }
-    img {
+    img, video {
       object-fit: contain;
       max-height: 75vh;
       height: 50rem;
