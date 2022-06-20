@@ -19,14 +19,24 @@ const handler: NextApiHandler = async (req, res) => {
   const doc = new Document(rawHtml)
   const $ = (q: string) => doc.root.query(q)
 
-  const parsed = {
+  const props = {
     title: $('article h1')[0].text()[0],
     image: $("meta[property='og:image']")[0].attributes.get('content'),
-    body: $('article p')[0].text()[0],
+    body: trimText($('article p')[0].text()[0]),
     media: $('main nav:nth-child(1)')[0].text()[0],
   }
 
-  return res.json({ parsed, siteTemplates: siteTemplates[0] })
+  console.log(props)
+
+  return res.json({ slug, props })
+}
+
+const trimText = (str) => {
+  const maxLength = 225;
+  const origitalTxt = str.replaceAll("\n", " ");
+  const trimmed = origitalTxt.substring(0, maxLength);
+  if (trimmed.length < origitalTxt.length) return trimmed + "...";
+  return trimmed;
 }
 
 export default handler

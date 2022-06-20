@@ -1,4 +1,4 @@
-import { FC, useEffect, createContext, useContext } from 'react'
+import { FC, useEffect, createContext, useContext, ReactEventHandler } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import {
   AnimatePresence,
@@ -15,6 +15,7 @@ import { media } from 'components/GlobalStyles'
 import { useMedia } from 'components/GlobalStyles'
 import { fast } from 'lib/transitions'
 import { ChromeWebstore } from 'components/icons/ChromeWebstore'
+import { Loader } from 'components/Loader'
 
 type RootProps = {
   open: boolean
@@ -87,9 +88,17 @@ type PanelProps = {
   title: string
   description: string
   placeholder: string
+  loading: boolean
+  onInputChange: (val: string) => void
 }
 
-export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
+export const Panel: FC<PanelProps> = ({
+  title,
+  description,
+  placeholder,
+  loading,
+  onInputChange,
+}) => {
   const isMobile = useMedia().lessThan('large')
   const panelAnimation = useAnimation()
 
@@ -114,8 +123,15 @@ export const Panel: FC<PanelProps> = ({ title, description, placeholder }) => {
         webpage a directly.
       </p>
       <div className="inputs">
-        <input type="text" placeholder={placeholder} />
-        <button className="cta">Paste link</button>
+        <input
+          type="text"
+          placeholder={placeholder}
+          disabled={loading}
+          onChange={ev => onInputChange(ev.target.value)}
+        />
+        <button className="cta" disabled={loading}>
+          {loading ? <Loader /> : 'Paste link'}
+        </button>
       </div>
       <a
         href="https://chrome.google.com/webstore/detail/designfactory-story-gener/glbablocmmdpnbcpkbpgioednikkldkp"
@@ -130,10 +146,12 @@ const isBrowser = typeof window !== 'undefined'
 
 type ImageProps = {
   layoutId: string
+  loading: boolean
   src: string
+  onLoad: ReactEventHandler<HTMLImageElement>
 }
 
-export const Image: FC<ImageProps> = ({ layoutId, src }) => {
+export const Image: FC<ImageProps> = ({ layoutId, src, loading, onLoad }) => {
   const threshold = isBrowser ? window.innerHeight / 8 : 200
   const imageAnimation = useAnimation()
   const y = useMotionValue(0)
@@ -197,7 +215,7 @@ export const Image: FC<ImageProps> = ({ layoutId, src }) => {
   }
 
   return (
-    <StyledImage
+    <ImageContainer
       layoutId={layoutId}
       transition={fast}
       drag={isMobile ? true : false}
@@ -210,10 +228,33 @@ export const Image: FC<ImageProps> = ({ layoutId, src }) => {
       onUpdate={handleUpdate}
       onTap={handleTap}
       style={{ y, scale }}>
-      <motion.img src={src} />
-    </StyledImage>
+      <motion.img src={src} onLoad={onLoad} />
+      {loading && <LoadingOverlay />}
+    </ImageContainer>
   )
 }
+
+const LoadingOverlay = () => {
+  return (
+    <StyledLoadingOverlay>
+      <Loader />
+    </StyledLoadingOverlay>
+  )
+}
+
+const StyledLoadingOverlay = styled.div`
+  position: absolute;
+  background-color: rgba(40, 40, 40, 0.7);
+  backdrop-filter: blur(42px) saturate(160%);
+  inset: 0;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  svg {
+    width: 56px;
+    height: 56px;
+  }
+`
 
 const StyledContent = styled(motion.div)`
   z-index: 3;
@@ -231,9 +272,12 @@ const StyledContent = styled(motion.div)`
     max-height: 80vh;
     flex-direction: row-reverse;
     gap: 10vw;
+    button.close > svg {
+      margin-left: -0.5rem;
+    }
   `}
 `
-const StyledImage = styled(motion.div)`
+const ImageContainer = styled(motion.div)`
   z-index: 3;
   ${media.lessThan('large')`
     position: fixed;
@@ -298,13 +342,13 @@ const StyledPanel = styled(motion.div)`
       min-width: 100px;
       flex-grow: 1;
       padding-left: 16px;
-      text-overflow: ellipsis;
+      /* text-overflow: ellipsis; */
       border: none;
       background: none;
       font-size: 16px;
+      color: white;
       &:focus {
         outline: none;
-        color: white;
       }
       ::placeholder {
         color: rgba(255, 255, 255, 0.2);
@@ -321,6 +365,9 @@ const StyledPanel = styled(motion.div)`
       text-transform: uppercase;
       font-weight: bold;
       user-select: none;
+      &:disabled {
+        background: #424242;
+      }
     }
   }
   ${media.lessThan('large')`

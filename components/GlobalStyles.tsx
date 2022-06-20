@@ -108,9 +108,6 @@ export const GlobalStyles = createGlobalStyle`
       background: white;
       color: black;
     }
-    svg {
-      margin-left: -.5rem;
-    }
   }
   form {
     display: flex;
