@@ -288,6 +288,9 @@ const ImageContainer = styled(motion.div)`
   z-index: 3;
   max-width: calc(100% - 16px);
   max-height: calc(100% - 8px);
+  video {
+    aspect-ratio: 1080 / 1920;
+  }
   ${media.lessThan('large')`
     position: fixed;
     width: auto;
