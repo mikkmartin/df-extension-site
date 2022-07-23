@@ -2,6 +2,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group'
 import styled from 'styled-components'
 import React, { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Accordion } from '../components/temp/Accordion'
 
 export default function Test() {
   const ref = useRef(null)
@@ -14,17 +15,7 @@ export default function Test() {
 
   return (
     <Container>
-      <ListContainer>
-        {sites.map((site, i) => (
-          <RadioGroup.Item key={i} value={site} asChild onFocus={() => handleFocus(i)}>
-            <input
-              type="text"
-              data-pseudofocus={currentFocus === i ? 'true' : 'false'}
-              value={site}
-            />
-          </RadioGroup.Item>
-        ))}
-      </ListContainer>
+      <Accordion tabs={sites} onSelect={handleFocus} pseudoFocus={currentFocus} />
       <div ref={ref}>
         {sites.map((site, i) => (
           <Image url={site} onViewportEnter={() => setCurrentFocus(i)} />
@@ -75,23 +66,3 @@ const sites = [
   'https://www.deviantart.com',
   'https://www.500px.com',
 ]
-
-const ListContainer = styled(RadioGroup.Root)`
-  position: sticky;
-  align-self: flex-start;
-  top: 0;
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  input {
-    background: none;
-    border: none;
-    color: inherit;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    &[data-pseudofocus='true'] {
-      outline: 1px solid white;
-    }
-  }
-`
