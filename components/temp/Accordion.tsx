@@ -6,7 +6,7 @@ import {
   Content as ContentBase,
 } from '@radix-ui/react-accordion'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 
 const smooth = { type: 'spring', stiffness: 500, damping: 40, mass: 1 }
@@ -110,6 +110,9 @@ const Item = styled(ItemBase)`
   &[data-pseudofocus='true'] {
     box-shadow: 0 0 0 2px rgb(0, 119, 255);
   }
+  &:focus-within {
+    background: rgba(255, 255, 255, 0.2);
+  }
 `
 const Header = styled(HeaderBase)`
   button {
@@ -133,5 +136,16 @@ const Content = styled(motion(ContentBase))`
     display: flex;
     flex-direction: column;
     gap: 4px;
+  }
+  input {
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    padding: 3px;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    &:focus {
+      box-shadow: 0 0 0 0.5px rgb(0, 119, 255);
+    }
   }
 `

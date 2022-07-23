@@ -48,10 +48,8 @@ const Image = ({ url, onViewportEnter }) => {
 }
 
 const sites = [
-  'https://www.google.com',
   'https://www.facebook.com',
   'https://www.youtube.com',
-  'https://www.instagram.com',
   'https://www.twitter.com',
   'https://www.reddit.com',
   'https://www.linkedin.com',
@@ -60,9 +58,7 @@ const sites = [
   'https://www.quora.com',
   'https://www.flickr.com',
   'https://www.github.com',
-  'https://www.codepen.io',
   'https://www.dribbble.com',
   'https://www.behance.net',
-  'https://www.deviantart.com',
   'https://www.500px.com',
 ]
