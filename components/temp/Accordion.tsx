@@ -28,8 +28,10 @@ export const Accordion = ({ tabs, onSelect, pseudoFocus }) => {
           value={tab}
           onFocus={() => handleSelect(tab, i)}
           data-pseudofocus={i === pseudoFocus ? 'true' : 'false'}>
-          <Header>
-            <Trigger>{tab.split('https://www.')[1]}</Trigger>
+          <Header as="div">
+            <Trigger asChild>
+              <input type="text" defaultValue={tab} />
+            </Trigger>
           </Header>
           <AnimatePresence>
             {currentTab === tab && (
@@ -115,15 +117,20 @@ const Item = styled(ItemBase)`
   }
 `
 const Header = styled(HeaderBase)`
-  button {
+  input {
     border: none;
     background: none;
     padding: 12px;
+    margin-top: -8px;
+    padding-top: 20px;
     outline: none;
-    cursor: pointer;
     width: 100%;
-    margin-top: -5px;
-    padding-top: 17px;
+    text-align: left;
+    color: white;
+    line-height: 150%;
+    ::selection {
+      background: rgb(0, 119, 255);
+    }
   }
 `
 const Content = styled(motion(ContentBase))`
