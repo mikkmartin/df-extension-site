@@ -13,14 +13,14 @@ const handler: NextApiHandler = async (req, res) => {
   ])
 
   const siteTemplates = templates.filter(({ urlpattern }) => new URLPattern(urlpattern).test(url))
-  const { selectors } = siteTemplates[0]
+  const { selectors, ...rest } = siteTemplates[0]
   const props = scrape(rawHtml, selectors)
 
-  return res.json({ props, selectors })
+  return res.json({ ...rest, pageData: props })
 }
 
 let templates
-const getTemplates = async () => {
+const getTemplates = async (): Promise<Template[]> => {
   if (templates) return templates
   const url = 'https://sdqycteblanimltlbiss.supabase.co/rest/v1/scrapers?select=*'
   const apikey =
