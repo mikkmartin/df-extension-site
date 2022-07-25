@@ -1,31 +1,67 @@
-import { Document, Element } from 'fast-wasm-scraper'
+import { load, Cheerio, AnyNode, CheerioAPI } from 'cheerio/lib/slim'
+import type { CSSProperties } from 'styled-components'
 
-export const loadHtml = (rawHtml: string) => new HtmlSelector(rawHtml).select
-export function fromJson<T extends object>(rawHtml: string, selectors: T): T {
+export class QuerySelector implements IQuerySelector {
+  private rootEl: CheerioAPI
+  private selection: Cheerio<AnyNode>
+  constructor(rawHtml: string) {
+    this.rootEl = load(rawHtml)
+  }
+  select = (selector: string) => {
+    this.selection = this.rootEl(selector)
+    return this
+  }
+  find = (selector: string) => {
+    this.selection = this.selection.find(selector)
+    return this
+  }
+  parent = (selector?: string) => {
+    if (selector) {
+      const _el = this.selection?.closest(selector)
+      if (Boolean(_el.get().length)) this.selection = _el
+    } else {
+      const _el = this.selection?.parent()
+      if (_el) this.selection = _el
+    }
+    return this
+  }
+  child = (selector?: string) => {
+    this.selection = this.selection.children(selector).first()
+    return this
+  }
+  style = (selector: keyof CSSProperties) => {
+    const styleValue = this.selection.css(selector)
+    if (selector === 'backgroundImage') return this.backgroundImage(styleValue)
+    return styleValue
+  }
+  backgroundImage = (str: string) => {
+    return {
+      get: () => str,
+      asUrl: () => str?.split('"')[1]!,
+    }
+  }
+  txt = () => {
+    return this.selection.text()
+  }
+  attr = (attr: string) => {
+    return this.selection.attr(attr)
+  }
+  hasAttr = (attr: string) => {
+    return this.selection.attr(attr) !== undefined
+  }
+  get = () => {
+    return this.selection.get(0) as unknown as HTMLElement
+  }
+}
+
+export function scrape<T extends object>(rawHtml: string, selectors: T): T {
   return new FromJson(rawHtml).fromJson(selectors)
 }
 
-class HtmlSelector {
-  el: Element
-  constructor(rawHtml: string) {
-    this.el = new Document(rawHtml).root
-  }
-  select = (selector: string) => {
-    this.el = this.el?.query(selector)[0]
-    return this
-  }
-  attr = (attrName: string) => {
-    return this.el?.attributes[attrName]
-  }
-  txt = () => {
-    return this.el?.text()
-  }
-}
-
 class FromJson {
-  $: HtmlSelector['select']
+  $: QuerySelector['find']
   constructor(rawHtml: string) {
-    this.$ = new HtmlSelector(rawHtml).select
+    this.$ = new QuerySelector(rawHtml).select
   }
   fromJson = <T>(selectors: T) => {
     const entries = Object.entries(selectors)
@@ -88,4 +124,19 @@ class FromJson {
       if (value !== undefined) return key
     }, undefined)
   }
+}
+
+interface IQuerySelector {
+  find: (selector: string) => this
+  parent: (selector?: string) => this
+  child: (selector?: string) => this
+  style: (style: string) => any
+  backgroundImage: (str: string) => {
+    get: () => string
+    asUrl: () => string
+  }
+  txt: () => string
+  attr: (attr: string) => string
+  hasAttr: (attr: string) => boolean
+  get: () => HTMLElement
 }

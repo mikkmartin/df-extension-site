@@ -1,6 +1,6 @@
 import { NextApiHandler } from 'next'
 const { URLPattern } = require('urlpattern-polyfill')
-import { fromJson } from '../../lib/domSelector'
+import { scrape } from '../../lib/domSelector'
 
 const handler: NextApiHandler = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true')
@@ -13,27 +13,10 @@ const handler: NextApiHandler = async (req, res) => {
   ])
 
   const siteTemplates = templates.filter(({ urlpattern }) => new URLPattern(urlpattern).test(url))
-  const { urlpattern, selectors, name, slug } = siteTemplates[0]
-  // const entries = Object.entries(selectors)
+  const { selectors } = siteTemplates[0]
+  const props = scrape(rawHtml, selectors)
 
-  const props = fromJson(rawHtml, selectors)
-
-  // props = Object.entries(props).reduce<typeof props>(
-  //   (all, [key, value]) => ({ ...all, [key]: trimText(value) }),
-  //   {} as typeof props
-  // )
-
-  return res.json({ slug, props, siteTemplates })
-}
-
-const trimText = str => {
-  return str
-  //if (str.startsWith('http')) return str
-  const maxLength = 225
-  const origitalTxt = str.replaceAll('\n', ' ')
-  const trimmed = origitalTxt.substring(0, maxLength)
-  if (trimmed.length < origitalTxt.length) return trimmed + '...'
-  return trimmed
+  return res.json({ props, selectors })
 }
 
 let templates
