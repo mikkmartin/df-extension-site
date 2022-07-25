@@ -14,19 +14,10 @@ export default function Test() {
     ref.current.querySelectorAll('img')[i].scrollIntoView({ block: 'center' })
   }
 
-  useEffect(() => {
-    const url = 'https://www.google.com'
-    fetch(`/api?url=${url}`)
-      .then(res => res.json())
-      .then(console.log)
-    // const params = objectToUrlParams(props)
-    // setSrc(`https://dev.designfactory.app/files/${slug}.png${params}`)
-  }, [])
-
   return (
     <Container>
       <Accordion tabs={sites} onSelect={handleFocus} pseudoFocus={currentFocus} />
-      <div ref={ref}>
+      <div style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr' }} ref={ref}>
         {sites.map((site, i) => (
           <Image url={site} key={i} i={i} onViewportEnter={() => setCurrentFocus(i)} />
         ))}
@@ -48,17 +39,34 @@ const Container = styled.div`
 `
 
 const Image = ({ url, onViewportEnter, i }) => {
+  const [imageUrl, setImageUrl] = useState('')
+
+  useEffect(() => {
+    fetch(`/api?url=${url}`)
+      .then(res => res.json())
+      .then(data => {
+        const params = objectToUrlParams(data.pageData)
+        const _url = `https://dev.designfactory.app/files/${data.slug}.png${params}`
+        console.log(_url)
+        setImageUrl(_url)
+      })
+  }, [url])
+
   return (
     <motion.img
+      style={{ minWidth: 200, minHeight: 200 }}
       onViewportEnter={onViewportEnter}
       viewport={{ amount: 'all' }}
-      src={i % 2 ? 'https://placekitten.com/600/600' : 'https://placekitten.com/600/500'}
+      src={imageUrl ? imageUrl : 'https://placekitten.com/600/500'}
     />
   )
 }
 
 const sites = [
   'https://www.facebook.com',
+  'https://www.levila.ee/tekstid/see-oli-kuuditamine',
+  'https://www.levila.ee/tekstid/levilas-hakkas-ilmuma-raamat-kersti-kaljulaidist',
+  'https://www.levila.ee/raadio/usu-voim',
   'https://www.levila.ee/uudised/eesti-gaas-ostab-maailmast-gaasi-kokku',
   'https://www.youtube.com',
   'https://www.twitter.com',
