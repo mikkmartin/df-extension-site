@@ -20,6 +20,7 @@ export const LinkAccordion = ({ data, onSelect }) => {
     setCurrentTab(url)
   }
 
+  nth.current = -1
   return (
     <Container type="single" value={currentTab}>
       {Object.entries(groupBySite(data)).map(([hostname, data], i) => {
@@ -29,7 +30,7 @@ export const LinkAccordion = ({ data, onSelect }) => {
               <span>{hostname.split('www.')[1]}</span>
             </div>
             {data.map((data, _i) => {
-              i === 0 ? (nth.current = 0) : (nth.current += 1)
+              nth.current += 1
               const _nth = nth.current
               return (
                 <Item key={_i} value={data.url} onFocus={ev => handleFocus(ev, data.url, _nth)}>

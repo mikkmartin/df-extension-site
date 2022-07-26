@@ -12,29 +12,42 @@ export default function Test() {
 
   const handleFocus = i => {
     if (!ref.current) return
-    console.log(i, ref.current.querySelectorAll('img')[i])
     ref.current.querySelectorAll('img')[i].scrollIntoView({ block: 'center' })
   }
 
   useEffect(() => {
-    siteData.map(({ url }) => {
-      fetch(`/api?url=${url}`)
-        .then(res => res.json())
-        .then(data => {
-          setSiteData(prev =>
-            prev.map(site => {
-              if (site.url === url) return { ...site, ...data }
-              return site
-            })
-          )
-        })
-    })
+    siteData.map(({ url }) => getData(url))
   }, [])
+
+  const getData = (url: string) => {
+    fetch(`/api?url=${url}`)
+      .then(res => res.json())
+      .then(data => {
+        setSiteData(prev =>
+          prev.map(site => {
+            if (site.url === url) return { ...site, ...data }
+            return site
+          })
+        )
+      })
+  }
+
+  const handleAdd = ev => {
+    ev.preventDefault()
+    const input = ev.target.querySelector('input')
+    if (!input) return
+    const value = input.value
+    const isUrl = isValidHttpUrl(input.value)
+    if (!isUrl) return
+    setSiteData(prev => [...prev, { url: value }])
+    getData(value)
+    input.value = ''
+  }
 
   return (
     <Container>
       <div className="sidebar">
-        <AddNew>
+        <AddNew onSubmit={handleAdd}>
           <input type="text" placeholder="Add url..." />
           <button type="submit">Add</button>
         </AddNew>
@@ -66,6 +79,19 @@ const Container = styled.div`
     place-items: center;
     img {
       width: auto;
+      display: block;
+      position: relative;
+      padding: 2rem;
+      &::after {
+        inset: 0;
+        position: absolute;
+        content: ' ';
+        display: block;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        display: grid;
+        place-content: center;
+      }
     }
   }
 `
@@ -154,7 +180,12 @@ const sites = [
   'https://www.500px.com',
 ]
 
-// export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) => {
-
-//   return { props }
-// }
+function isValidHttpUrl(string) {
+  let url
+  try {
+    url = new URL(string)
+  } catch (_) {
+    return false
+  }
+  return url.protocol === 'http:' || url.protocol === 'https:'
+}
