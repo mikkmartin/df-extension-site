@@ -108,6 +108,12 @@ const Container = styled(Accordion.Root)`
     justify-content: space-between;
     align-items: baseline;
     margin-top: 16px;
+    span {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.5;
+    }
     > button {
       all: none;
     }

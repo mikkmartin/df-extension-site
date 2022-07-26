@@ -62,10 +62,9 @@ const Container = styled.div`
   .images {
     display: grid;
     padding: 72px;
-    gap: 16px;
+    gap: 36px;
     place-items: center;
     img {
-      max-height: 80vh;
       width: auto;
     }
   }
@@ -113,7 +112,14 @@ const Image: FC<Props> = ({ data, onViewportEnter }) => {
         <Loader />
       </LoadingBox>
     )
-  return <motion.img onViewportEnter={onViewportEnter} viewport={{ amount: 'all' }} src={url} />
+  return (
+    <motion.img
+      style={{ maxWidth: 540 }}
+      onViewportEnter={onViewportEnter}
+      viewport={{ amount: 'all' }}
+      src={url}
+    />
+  )
 }
 
 const LoadingBox = styled(motion.div)`
@@ -126,14 +132,17 @@ const LoadingBox = styled(motion.div)`
 `
 
 const sites = [
-  'https://www.facebook.com',
   'https://www.levila.ee/tekstid/see-oli-kuuditamine',
   'https://www.levila.ee/tekstid/levilas-hakkas-ilmuma-raamat-kersti-kaljulaidist',
   'https://www.levila.ee/raadio/usu-voim',
   'https://www.levila.ee/uudised/eesti-gaas-ostab-maailmast-gaasi-kokku',
+  'https://www.reddit.com/r/ukraine/comments/w85z14/the_armed_forces_of_ukraine_attacked_an_oil_depot/',
+  'https://www.reddit.com/r/ukraine/comments/w7tsvy/little_bits_of_tenderness_in_a_brutal_world/',
+  'https://www.reddit.com/r/ukraine/comments/w7y1c7/ukrainians_are_returning_to_the_ukrainian/',
+  'https://www.reddit.com/r/ukraine/comments/w82tl1/russia_has_made_it_clear_putins_goal_is_to/',
+  'https://www.facebook.com',
   'https://www.youtube.com',
   'https://www.twitter.com',
-  'https://www.reddit.com',
   'https://www.linkedin.com',
   'https://www.pinterest.com',
   'https://www.tumblr.com',
