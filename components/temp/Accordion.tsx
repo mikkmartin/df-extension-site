@@ -96,8 +96,6 @@ const Container = styled(Root)`
   position: sticky;
   top: 0;
   bottom: 0;
-  width: 400px;
-  height: 300px;
   display: grid;
   gap: 4px;
   padding-bottom: 50vh;

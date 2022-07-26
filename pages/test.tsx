@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import React, { useEffect, useRef, useState, FC } from 'react'
 import { motion } from 'framer-motion'
-import { Accordion } from '../components/temp/Accordion'
 import { objectToUrlParams } from 'lib/objectToUrlParams'
 import { Loader } from 'components/Loader'
+import { LinkAccordion } from 'components/temp/LinkAccordion'
 
 export default function Test() {
   const [siteData, setSiteData] = useState(sites.map(url => ({ url })))
@@ -12,6 +12,7 @@ export default function Test() {
 
   const handleFocus = i => {
     if (!ref.current) return
+    console.log(i, ref.current.querySelectorAll('img')[i])
     ref.current.querySelectorAll('img')[i].scrollIntoView({ block: 'center' })
   }
 
@@ -32,8 +33,14 @@ export default function Test() {
 
   return (
     <Container>
-      <Accordion tabs={sites} onSelect={handleFocus} pseudoFocus={currentFocus} />
-      <div style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr' }} ref={ref}>
+      <div className="sidebar">
+        <AddNew>
+          <input type="text" placeholder="Add url..." />
+          <button type="submit">Add</button>
+        </AddNew>
+        <LinkAccordion data={siteData} onSelect={handleFocus} />
+      </div>
+      <div className="images" ref={ref}>
         {siteData.map((data, i) => (
           <Image data={data} key={i} onViewportEnter={() => setCurrentFocus(i)} />
         ))}
@@ -44,13 +51,40 @@ export default function Test() {
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 5rem;
-  width: 100vw;
-  height: 100vh;
-  overflow: scroll;
-  img {
-    max-height: 80vh;
+  grid-template-columns: 2fr 4fr;
+  > div {
+    overflow-y: auto;
+    height: 100vh;
+  }
+  .sidebar {
+    padding: 72px;
+  }
+  .images {
+    display: grid;
+    padding: 72px;
+    gap: 16px;
+    place-items: center;
+    img {
+      max-height: 80vh;
+      width: auto;
+    }
+  }
+`
+const AddNew = styled.form`
+  display: flex;
+  width: 100%;
+  input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  button {
+    background: var(--highlight) !important;
+    &:focus {
+      background: #3697ff !important;
+      outline: 2px solid rgba(0, 122, 255, 1);
+      outline-offset: 1px;
+    }
   }
 `
 
@@ -79,14 +113,7 @@ const Image: FC<Props> = ({ data, onViewportEnter }) => {
         <Loader />
       </LoadingBox>
     )
-  return (
-    <motion.img
-      style={{ minWidth: 400, minHeight: 400 }}
-      onViewportEnter={onViewportEnter}
-      viewport={{ amount: 'all' }}
-      src={url}
-    />
-  )
+  return <motion.img onViewportEnter={onViewportEnter} viewport={{ amount: 'all' }} src={url} />
 }
 
 const LoadingBox = styled(motion.div)`
