@@ -1,6 +1,9 @@
 import * as Accordion from '@radix-ui/react-accordion'
 import { useRef, useState } from 'react'
 import styled from 'styled-components'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const smooth = { type: 'spring', stiffness: 500, damping: 40, mass: 1 }
 
 export const LinkAccordion = ({ data, onSelect }) => {
   const [currentTab, setCurrentTab] = useState(data[0].url)
@@ -33,9 +36,27 @@ export const LinkAccordion = ({ data, onSelect }) => {
                   <Accordion.Trigger asChild>
                     <input type="text" value={data.url} />
                   </Accordion.Trigger>
-                  <Accordion.Content>
-                    {data.pageData && <ConstKeyValueList obj={data.pageData} />}
-                  </Accordion.Content>
+                  <AnimatePresence>
+                    {currentTab === data.url && (
+                      <Content
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        transition={smooth}
+                        variants={{
+                          closed: {
+                            height: 0,
+                          },
+                          open: {
+                            height: 'auto',
+                          },
+                        }}
+                        key={data.url}
+                        forceMount>
+                        {data.pageData && <ConstKeyValueList obj={data.pageData} />}
+                      </Content>
+                    )}
+                  </AnimatePresence>
                 </Item>
               )
             })}
@@ -45,6 +66,10 @@ export const LinkAccordion = ({ data, onSelect }) => {
     </Container>
   )
 }
+
+const Content = styled(motion(Accordion.Content))`
+  overflow: hidden;
+`
 
 const ConstKeyValueList = ({ obj }: { obj: { [key: string]: string } }) => {
   return (
