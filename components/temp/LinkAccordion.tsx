@@ -73,7 +73,21 @@ const Content = styled(motion(Accordion.Content))`
 
 const ConstKeyValueList = ({ obj }: { obj: { [key: string]: string } }) => {
   return (
-    <StyledList>
+    <StyledList
+      initial="closed"
+      animate="open"
+      exit="closed"
+      transition={smooth}
+      variants={{
+        closed: {
+          opacity: 0,
+          y: -20,
+        },
+        open: {
+          opacity: 1,
+          y: 0,
+        },
+      }}>
       {Object.entries(obj).map(([key, value]) => (
         <li key={key}>
           <span>{key}</span>
@@ -100,7 +114,7 @@ const Container = styled(Accordion.Root)`
   }
 `
 
-const StyledList = styled.ul`
+const StyledList = styled(motion.ul)`
   list-style: none;
   padding-bottom: 4px;
   font-size: 10px;
