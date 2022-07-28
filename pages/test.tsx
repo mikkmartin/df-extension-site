@@ -4,44 +4,16 @@ import { motion } from 'framer-motion'
 import { objectToUrlParams } from 'lib/objectToUrlParams'
 import { Loader } from 'components/Loader'
 import { LinkAccordion } from 'components/temp/LinkAccordion'
+import { useSites } from 'data/useSites'
 
 export default function Test() {
-  const [siteData, setSiteData] = useState(sites.map(url => ({ url })))
+  const { sitesData, handleAdd, handleRemove } = useSites()
   const [currentFocus, setCurrentFocus] = useState(0)
   const ref = useRef(null)
 
   const handleFocus = i => {
     if (!ref.current) return
-    ref.current.querySelectorAll('img')[i].scrollIntoView({ block: 'center' })
-  }
-
-  useEffect(() => {
-    siteData.map(({ url }) => getData(url))
-  }, [])
-
-  const getData = (url: string) => {
-    fetch(`/api?url=${url}`)
-      .then(res => res.json())
-      .then(data => {
-        setSiteData(prev =>
-          prev.map(site => {
-            if (site.url === url) return { ...site, ...data }
-            return site
-          })
-        )
-      })
-  }
-
-  const handleAdd = ev => {
-    ev.preventDefault()
-    const input = ev.target.querySelector('input')
-    if (!input) return
-    const value = input.value
-    const isUrl = isValidHttpUrl(input.value)
-    if (!isUrl) return
-    setSiteData(prev => [...prev, { url: value }])
-    getData(value)
-    input.value = ''
+    ref.current.querySelectorAll('img')[i].scrollIntoView({ block: 'center', behavior: 'smooth' })
   }
 
   return (
@@ -51,10 +23,10 @@ export default function Test() {
           <input type="text" placeholder="Add url..." />
           <button type="submit">Add</button>
         </AddNew>
-        <LinkAccordion data={siteData} onSelect={handleFocus} />
+        <LinkAccordion data={sitesData} onSelect={handleFocus} />
       </div>
       <div className="images" ref={ref}>
-        {siteData.map((data, i) => (
+        {sitesData.map((data, i) => (
           <Image data={data} key={i} onViewportEnter={() => setCurrentFocus(i)} />
         ))}
       </div>
@@ -156,36 +128,3 @@ const LoadingBox = styled(motion.div)`
   display: grid;
   place-content: center;
 `
-
-const sites = [
-  'https://www.levila.ee/tekstid/see-oli-kuuditamine',
-  'https://www.levila.ee/tekstid/levilas-hakkas-ilmuma-raamat-kersti-kaljulaidist',
-  'https://www.levila.ee/raadio/usu-voim',
-  'https://www.levila.ee/uudised/eesti-gaas-ostab-maailmast-gaasi-kokku',
-  'https://www.reddit.com/r/ukraine/comments/w85z14/the_armed_forces_of_ukraine_attacked_an_oil_depot/',
-  'https://www.reddit.com/r/ukraine/comments/w7tsvy/little_bits_of_tenderness_in_a_brutal_world/',
-  'https://www.reddit.com/r/ukraine/comments/w7y1c7/ukrainians_are_returning_to_the_ukrainian/',
-  'https://www.reddit.com/r/ukraine/comments/w82tl1/russia_has_made_it_clear_putins_goal_is_to/',
-  'https://www.facebook.com',
-  'https://www.youtube.com',
-  'https://www.twitter.com',
-  'https://www.linkedin.com',
-  'https://www.pinterest.com',
-  'https://www.tumblr.com',
-  'https://www.quora.com',
-  'https://www.flickr.com',
-  'https://www.github.com',
-  'https://www.dribbble.com',
-  'https://www.behance.net',
-  'https://www.500px.com',
-]
-
-function isValidHttpUrl(string) {
-  let url
-  try {
-    url = new URL(string)
-  } catch (_) {
-    return false
-  }
-  return url.protocol === 'http:' || url.protocol === 'https:'
-}
