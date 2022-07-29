@@ -33,7 +33,7 @@ const appRouter = router({
       const { selectors, ...rest } = siteTemplates[0]
       const props = scrape(rawHtml, selectors)
 
-      return { ...rest, pageData: props }
+      return { ...rest, pageData: props, selectors }
     }),
 })
 

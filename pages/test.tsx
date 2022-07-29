@@ -8,7 +8,7 @@ import { useSites } from 'data/useSites'
 
 export default function Test() {
   const { sitesData, handleAdd, handleRemove } = useSites()
-  const [currentFocus, setCurrentFocus] = useState(0)
+  const [focusIndex, setFocusIndex] = useState(0)
   const ref = useRef(null)
 
   const handleFocus = i => {
@@ -25,12 +25,17 @@ export default function Test() {
           <button type="submit">Add</button>
         </AddNew>
         {sitesData.length && (
-          <LinkAccordion data={sitesData} onSelect={handleFocus} onRemove={handleRemove} />
+          <LinkAccordion
+            data={sitesData}
+            focusIndex={focusIndex}
+            onSelect={handleFocus}
+            onRemove={handleRemove}
+          />
         )}
       </div>
       <div className="images" ref={ref}>
         {sitesData.map((data, i) => (
-          <Image data={data} key={i} onViewportEnter={() => setCurrentFocus(i)} />
+          <Image data={data} key={i} onViewportEnter={() => setFocusIndex(i)} />
         ))}
       </div>
     </Container>

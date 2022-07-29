@@ -1,16 +1,20 @@
 import * as Accordion from '@radix-ui/react-accordion'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash } from 'components/icons/Trash'
 import { ExternalLink } from 'components/icons/ExternalLink'
-import Link from 'next/link'
 
 const smooth = { type: 'spring', stiffness: 500, damping: 40, mass: 1 }
 
-export const LinkAccordion = ({ data, onSelect, onRemove }) => {
+export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
   const [currentTab, setCurrentTab] = useState(data[0].url)
+  const containerEl = useRef<HTMLDivElement>(null)
   const nth = useRef(0)
+
+  useEffect(() => {
+    setCurrentTab(data[focusIndex].url)
+  }, [focusIndex])
 
   // const formatSubUrl = (url, hostname) => {
   //   const subUrl = url.split(hostname)[1]
@@ -25,7 +29,7 @@ export const LinkAccordion = ({ data, onSelect, onRemove }) => {
 
   nth.current = -1
   return (
-    <Container type="single" value={currentTab}>
+    <Container type="single" value={currentTab} ref={containerEl}>
       {Object.entries(groupBySite(data)).map(([hostname, data], i) => {
         return (
           <>
