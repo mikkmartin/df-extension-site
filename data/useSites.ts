@@ -4,11 +4,25 @@ import { api } from 'data/server'
 
 export const useSites = () => {
   const [urls, setUrls] = useLocalStorage('urls', seedUrls)
-  const [sitesData, setSitesData] = useState<SitesState>(urls.map(url => ({ url })))
+  const [sitesData, setSitesData] = useState<SitesState>([])
 
   useEffect(() => {
-    setSitesData(arr =>
-      arr.map(prevSite => {
+    window['urls'] = {
+      reset: () => setUrls(seedUrls),
+      add: arr => {
+        if (!Array.isArray(arr) && arr.every(el => typeof el === 'string')) return
+        setUrls(arr)
+        const newFormated = arr.map(url => ({ url }))
+        setSitesData([...newFormated, ...sitesData])
+      },
+    }
+  }, [])
+
+  useEffect(() => {
+    //set initial state
+    if (sitesData.length === 0) setSitesData(urls.map(url => ({ url })))
+    setSitesData(prev =>
+      prev.map(prevSite => {
         const { url, loading } = prevSite
         if (loading) return prevSite
         api.getSiteData
@@ -40,10 +54,12 @@ export const useSites = () => {
     if (!isUrl) return
     if (urls.includes(value)) return
     setUrls([value, ...urls])
+    setSitesData([{ url: value }, ...sitesData])
     input.value = ''
   }
   const handleRemove = (url: string) => {
     setUrls(urls.filter(u => u !== url))
+    setSitesData(sitesData.filter(site => site.url !== url))
   }
 
   return {

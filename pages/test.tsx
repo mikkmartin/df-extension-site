@@ -13,7 +13,8 @@ export default function Test() {
 
   const handleFocus = i => {
     if (!ref.current) return
-    ref.current.querySelectorAll('img')[i].scrollIntoView({ block: 'center', behavior: 'smooth' })
+    const img = ref.current.querySelectorAll('img')
+    if (img) img[i]?.scrollIntoView({ block: 'center' })
   }
 
   return (
@@ -23,7 +24,9 @@ export default function Test() {
           <input type="text" placeholder="Add url..." />
           <button type="submit">Add</button>
         </AddNew>
-        <LinkAccordion data={sitesData} onSelect={handleFocus} />
+        {sitesData.length && (
+          <LinkAccordion data={sitesData} onSelect={handleFocus} onRemove={handleRemove} />
+        )}
       </div>
       <div className="images" ref={ref}>
         {sitesData.map((data, i) => (

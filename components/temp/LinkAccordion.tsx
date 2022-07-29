@@ -2,10 +2,13 @@ import * as Accordion from '@radix-ui/react-accordion'
 import { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Trash } from 'components/icons/Trash'
+import { ExternalLink } from 'components/icons/ExternalLink'
+import Link from 'next/link'
 
 const smooth = { type: 'spring', stiffness: 500, damping: 40, mass: 1 }
 
-export const LinkAccordion = ({ data, onSelect }) => {
+export const LinkAccordion = ({ data, onSelect, onRemove }) => {
   const [currentTab, setCurrentTab] = useState(data[0].url)
   const nth = useRef(0)
 
@@ -15,7 +18,7 @@ export const LinkAccordion = ({ data, onSelect }) => {
   // }
 
   const handleFocus = (ev, url, i) => {
-    console.log(ev.target.select())
+    //console.log(ev.target.select())
     onSelect && onSelect(i)
     setCurrentTab(url)
   }
@@ -27,16 +30,26 @@ export const LinkAccordion = ({ data, onSelect }) => {
         return (
           <>
             <div className="header" key={i}>
-              <span>{hostname.split('www.')[1]}</span>
+              <span>{hostname.split('www.')[1] || hostname}</span>
             </div>
             {data.map((data, _i) => {
               nth.current += 1
               const _nth = nth.current
               return (
                 <Item key={_i} value={data.url} onFocus={ev => handleFocus(ev, data.url, _nth)}>
-                  <Accordion.Trigger asChild>
-                    <input type="text" value={data.url} />
-                  </Accordion.Trigger>
+                  <div className="header">
+                    <Accordion.Trigger asChild>
+                      <input type="text" value={data.url} />
+                    </Accordion.Trigger>
+                    <Link href={data.url} target="_blank">
+                      <button>
+                        <ExternalLink />
+                      </button>
+                    </Link>
+                    <button onClick={() => onRemove(data.url)}>
+                      <Trash />
+                    </button>
+                  </div>
                   <AnimatePresence>
                     {currentTab === data.url && (
                       <Content
@@ -103,7 +116,7 @@ const Container = styled(Accordion.Root)`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  .header {
+  > .header {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -155,20 +168,49 @@ const Item = styled(Accordion.Item)`
   :focus-within {
     box-shadow: inset 0 0 0 1px rgb(0, 119, 255), 0 0 0 2px rgb(0, 119, 255, 0.2);
   }
-  input {
-    border: none;
-    background: none;
-    padding: 12px;
-    padding-left: 16px;
-    margin-top: -8px;
-    padding-top: 20px;
-    outline: none;
+  > .header {
     width: 100%;
-    text-align: left;
-    color: white;
-    line-height: 150%;
-    ::selection {
-      background: rgb(0, 119, 255);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 10px;
+    input {
+      border: none;
+      background: none;
+      padding: 12px;
+      padding-left: 16px;
+      margin-top: -8px;
+      padding-top: 20px;
+      outline: none;
+      width: 100%;
+      text-align: left;
+      color: white;
+      line-height: 150%;
+      ::selection {
+        background: rgb(0, 119, 255);
+      }
+    }
+    button {
+      opacity: 0;
+      background: none;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      svg {
+        height: 16px;
+        width: auto;
+      }
+      &:hover,
+      &:focus {
+        background: #ffffff1e;
+      }
+    }
+    &:hover,
+    &:focus-within {
+      button {
+        opacity: 1;
+      }
     }
   }
 `
