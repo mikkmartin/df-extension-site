@@ -41,11 +41,9 @@ export const LinkAccordion = ({ data, onSelect, onRemove }) => {
                     <Accordion.Trigger asChild>
                       <input type="text" value={data.url} />
                     </Accordion.Trigger>
-                    <Link href={data.url} target="_blank">
-                      <button>
-                        <ExternalLink />
-                      </button>
-                    </Link>
+                    <a className="button" href={data.url} target="_blank">
+                      <ExternalLink />
+                    </a>
                     <button onClick={() => onRemove(data.url)}>
                       <Trash />
                     </button>
@@ -190,13 +188,16 @@ const Item = styled(Accordion.Item)`
         background: rgb(0, 119, 255);
       }
     }
-    button {
+    button,
+    .button {
+      flex-shrink: 0;
       opacity: 0;
       background: none;
       padding: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: white;
       svg {
         height: 16px;
         width: auto;
@@ -206,9 +207,19 @@ const Item = styled(Accordion.Item)`
         background: #ffffff1e;
       }
     }
+    .button {
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      svg {
+        height: 14px;
+        margin-top: -1px;
+      }
+    }
     &:hover,
     &:focus-within {
-      button {
+      button,
+      .button {
         opacity: 1;
       }
     }
