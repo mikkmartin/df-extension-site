@@ -100,6 +100,7 @@ type Props = {
 
 const Image: FC<Props> = ({ data, onViewportEnter }) => {
   const [url, setUrl] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!data.slug) return
@@ -108,11 +109,14 @@ const Image: FC<Props> = ({ data, onViewportEnter }) => {
     setUrl(url)
     fetch(url)
       .then(res => res.blob())
-      .then(blob => setUrl(window.URL.createObjectURL(blob)))
+      .then(blob => {
+        setLoading(false)
+        setUrl(window.URL.createObjectURL(blob))
+      })
       .catch(err => console.log(err))
   }, [data.slug])
 
-  if (!url)
+  if (!url || loading)
     return (
       <LoadingBox onViewportEnter={onViewportEnter} viewport={{ amount: 'all' }}>
         <Loader />

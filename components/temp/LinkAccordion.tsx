@@ -1,5 +1,14 @@
 import * as Accordion from '@radix-ui/react-accordion'
-import { useEffect, useRef, useState } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  createContext,
+  useContext,
+  FC,
+  Dispatch,
+  SetStateAction,
+} from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash } from 'components/icons/Trash'
@@ -39,8 +48,14 @@ export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
             {data.map((data, _i) => {
               nth.current += 1
               const _nth = nth.current
+              const hasMissingValues =
+                data.selectors && !missingValues(data.selectors, data.pageData)
               return (
-                <Item key={_i} value={data.url} onFocus={ev => handleFocus(ev, data.url, _nth)}>
+                <Item
+                  key={_i}
+                  value={data.url}
+                  className={hasMissingValues ? 'error' : ''}
+                  onFocus={ev => handleFocus(ev, data.url, _nth)}>
                   <div className="header">
                     <Accordion.Trigger asChild>
                       <input type="text" value={data.url} />
@@ -69,7 +84,9 @@ export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
                         }}
                         key={data.url}
                         forceMount>
-                        {data.pageData && <ConstKeyValueList obj={data.pageData} />}
+                        {data.pageData && (
+                          <KeyValueList selectors={data.selectors} obj={data.pageData} />
+                        )}
                       </Content>
                     )}
                   </AnimatePresence>
@@ -83,11 +100,26 @@ export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
   )
 }
 
+const missingValues = (selectors, obj) =>
+  Object.entries(selectors).every(([key]) => {
+    if (!obj[key]) {
+      return false
+    } else {
+      return true
+    }
+  })
+
 const Content = styled(motion(Accordion.Content))`
   overflow: hidden;
 `
 
-const ConstKeyValueList = ({ obj }: { obj: { [key: string]: string } }) => {
+const KeyValueList = ({
+  selectors,
+  obj,
+}: {
+  selectors: { [key: string]: any }
+  obj: { [key: string]: string }
+}) => {
   return (
     <StyledList
       initial="closed"
@@ -104,10 +136,10 @@ const ConstKeyValueList = ({ obj }: { obj: { [key: string]: string } }) => {
           y: 0,
         },
       }}>
-      {Object.entries(obj).map(([key, value]) => (
-        <li key={key}>
+      {Object.entries(selectors).map(([key]) => (
+        <li key={key} className={obj[key] ? '' : 'missing'}>
           <span>{key}</span>
-          <span>{value}</span>
+          <span>{obj[key]?.toString() || '---'}</span>
         </li>
       ))}
     </StyledList>
@@ -161,14 +193,37 @@ const StyledList = styled(motion.ul)`
       white-space: nowrap;
       text-overflow: ellipsis;
     }
+    &.missing {
+      span {
+        color: red;
+      }
+    }
   }
 `
 
 const Item = styled(Accordion.Item)`
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  position: relative;
   :focus-within {
     box-shadow: inset 0 0 0 1px rgb(0, 119, 255), 0 0 0 2px rgb(0, 119, 255, 0.2);
+  }
+  &.error {
+    &:not(:focus-within) {
+      &:after {
+        content: ' ';
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        width: 4px;
+        height: 4px;
+        background: red;
+        border-radius: 3px;
+      }
+    }
+    :focus-within {
+      box-shadow: inset 0 0 0 1px rgb(255, 0, 0), 0 0 0 2px rgb(255, 0, 0, 0.2);
+    }
   }
   > .header {
     width: 100%;

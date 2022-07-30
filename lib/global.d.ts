@@ -18,7 +18,7 @@ declare global {
       [key: string]: Selector | { [key: string]: Selector | true }
     }
   }
-  interface TemplateData extends Partial<Omit<Template, 'selectors'>> {
+  interface TemplateData extends Partial<Template> {
     url: string
     pageData?: {
       [key: string]: any
