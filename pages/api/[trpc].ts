@@ -3,6 +3,7 @@ import { createNextApiHandler, CreateNextContextOptions } from '@trpc/server/ada
 import { initTRPC, inferAsyncReturnType } from '@trpc/server'
 const { URLPattern } = require('urlpattern-polyfill')
 import { scrape } from '../../lib/domSelector'
+import { supabase, Scrapers } from 'data/supabase'
 import { z } from 'zod'
 
 export const createContext = (opts?: CreateNextContextOptions) => ({
@@ -37,14 +38,24 @@ const appRouter = router({
     }),
 })
 
-let remoteTemplates
+let remoteTemplates: Template[]
 const getTemplates = async (): Promise<Template[]> => {
   if (remoteTemplates) return [...remoteTemplates, ...defaultTemplates]
-  const url = 'https://sdqycteblanimltlbiss.supabase.co/rest/v1/scrapers?select=*'
-  const apikey =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzMzk2ODA5MSwiZXhwIjoxOTQ5NTQ0MDkxfQ.3lcwPf4xoviCoisWUHSF7Bl7mq_q3Rbfgtb-EcXmGZo'
-  const _templates = await fetch(url, { headers: { apikey } }).then(res => res.json())
-  remoteTemplates = _templates
+  const { data } = await supabase.from<Scrapers>('scrapers').select('*')
+  if (data) {
+    remoteTemplates = data.map(({ title, figma_id, figma_frame, slug, selectors, urlpattern }) => ({
+      name: title,
+      slug,
+      figma: {
+        file: figma_id,
+        frame: figma_frame as Template['figma']['frame'],
+      },
+      selectors: selectors as Template['selectors'],
+      urlpattern,
+    }))
+  } else {
+    throw new Error('Failed to fetch scrapers')
+  }
   return [...remoteTemplates, ...defaultTemplates]
 }
 

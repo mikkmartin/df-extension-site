@@ -10,6 +10,7 @@
     "@radix-ui/react-accordion": "^1.0.0",
     "@radix-ui/react-dialog": "1.0.0",
     "@radix-ui/react-radio-group": "^1.0.0",
+    "@supabase/supabase-js": "^1.35.4",
     "@trpc/client": "^10.0.0-alpha.41",
     "@trpc/next": "^10.0.0-alpha.41",
     "@trpc/server": "^10.0.0-alpha.41",
