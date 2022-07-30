@@ -1,14 +1,5 @@
 import * as Accordion from '@radix-ui/react-accordion'
-import {
-  useEffect,
-  useRef,
-  useState,
-  createContext,
-  useContext,
-  FC,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash } from 'components/icons/Trash'
@@ -25,13 +16,7 @@ export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
     setCurrentTab(data[focusIndex].url)
   }, [focusIndex])
 
-  // const formatSubUrl = (url, hostname) => {
-  //   const subUrl = url.split(hostname)[1]
-  //   return Boolean(subUrl.length > 0) ? url : subUrl
-  // }
-
-  const handleFocus = (ev, url, i) => {
-    //console.log(ev.target.select())
+  const handleFocus = (_, url, i) => {
     onSelect && onSelect(i)
     setCurrentTab(url)
   }
