@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash } from 'components/icons/Trash'
 import { ExternalLink } from 'components/icons/ExternalLink'
+import * as Tooltip from '@radix-ui/react-tooltip'
 
 const smooth = { type: 'spring', stiffness: 500, damping: 40, mass: 1 }
 
@@ -121,15 +122,42 @@ const KeyValueList = ({
           y: 0,
         },
       }}>
-      {Object.entries(selectors).map(([key]) => (
+      {Object.entries(selectors).map(([key, value]) => (
         <li key={key} className={obj[key] ? '' : 'missing'}>
           <span>{key}</span>
-          <span>{obj[key]?.toString() || '---'}</span>
+          <ToolTip value={value}>
+            <span>{obj[key]?.toString() || '---'}</span>
+          </ToolTip>
         </li>
       ))}
     </StyledList>
   )
 }
+
+const ToolTip = ({ children, value }) => (
+  <Tooltip.Provider>
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
+      <Tooltip.Portal>
+        <StyledToolTop sideOffset={20} side="right">
+          <small>{value}</small>
+          <Tooltip.Arrow />
+        </StyledToolTop>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  </Tooltip.Provider>
+)
+
+const StyledToolTop = styled(Tooltip.Content)`
+  background: black;
+  padding: 6px 8px;
+  border-radius: 4px;
+  max-width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 90%;
+`
 
 const Container = styled(Accordion.Root)`
   display: flex;

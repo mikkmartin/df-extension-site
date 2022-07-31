@@ -8,11 +8,11 @@ export class QuerySelector implements IQuerySelector {
     this.rootEl = load(rawHtml)
   }
   select = (selector: string) => {
-    this.selection = this.rootEl(selector)
+    this.selection = this.rootEl(selector).first()
     return this
   }
   find = (selector: string) => {
-    this.selection = this.selection.find(selector)
+    this.selection = this.selection.find(selector).first()
     return this
   }
   parent = (selector?: string) => {
@@ -71,7 +71,6 @@ class FromJson {
         : this.findFirstValue(selectors)
       return { ...all, [key]: value }
     }, {})
-    //@ts-ignore
     return data as T
   }
   isObject = (value: any) => typeof value === 'object' && !Array.isArray(value) && value !== null
