@@ -1,13 +1,69 @@
-import styled from 'styled-components'
-import React, { useEffect, useRef, useState, FC } from 'react'
-import { motion } from 'framer-motion'
-import { objectToUrlParams } from 'lib/objectToUrlParams'
 import { Loader } from 'components/Loader'
 import { LinkAccordion } from 'components/temp/LinkAccordion'
-import { useSites } from 'data/useSites'
+import { api } from 'data/server'
+import { motion } from 'framer-motion'
+import { objectToUrlParams } from 'lib/objectToUrlParams'
+import { FC, useEffect, useRef, useState } from 'react'
+import { useNoclip } from 'react-noclip'
+import { useLocalStorage } from 'react-use'
+import styled from 'styled-components'
 
 export default function Test() {
-  const { sitesData, handleAdd, handleRemove } = useSites()
+  const [urls, setUrls, remove] = useLocalStorage<{ [key: string]: string[] }>('urls', {
+    defaults: seedUrls,
+  })
+
+  const [selectedUrls, setSelectedUrls] = useState(urls?.[Object.keys(urls)[0]] ?? seedUrls)
+
+  const actions = urls
+    ? Object.keys(urls).reduce(
+        (all, key) => ({
+          ...all,
+          [key]: () => setSelectedUrls(urls[key]),
+        }),
+        {}
+      )
+    : {}
+
+  function isUrlArray(str) {
+    try {
+      const json = JSON.parse(str)
+      return (
+        Array.isArray(json) &&
+        json.every(line => line.startsWith('http') || line.startsWith('https'))
+      )
+    } catch (e) {
+      return false
+    }
+  }
+
+  function isUrlList(str) {
+    return str.split('\n').every(line => line.startsWith('http') || line.startsWith('https'))
+  }
+
+  useNoclip({
+    ...actions,
+    clearLocalStorage: () => remove(),
+    addUrlList: {
+      title: 'text-input',
+      content: 'text-area',
+      onSubmit: (data: any) => {
+        const urlArray = isUrlArray(data.content)
+          ? JSON.parse(data.content)
+          : isUrlList(data.content)
+          ? data.content.split('\n')
+          : null
+        if (urlArray === null) return
+        setUrls({
+          ...urls,
+          [data.title]: urlArray,
+        })
+        console.log(urlArray)
+        setSelectedUrls(urlArray)
+      },
+    },
+  })
+
   const [focusIndex, setFocusIndex] = useState(0)
   const ref = useRef(null)
 
@@ -17,27 +73,51 @@ export default function Test() {
     if (img) img[i]?.scrollIntoView({ block: 'center' })
   }
 
+  const [urlState, setUrlsState] = useState<SitesState[]>(
+    selectedUrls.map(url => ({ url, loading: true }))
+  )
+
+  useEffect(() => {
+    setUrlsState(selectedUrls.map(url => ({ url, loading: true })))
+    selectedUrls.map(async (url, i) => {
+      const data = await api.getSiteData.query({ url })
+      setUrlsState(prev => {
+        const newState = [...prev]
+        newState[i] = { url, ...data, loading: false }
+        return newState
+      })
+    })
+  }, [selectedUrls])
+
+  function handleRemove(url) {
+    setUrlsState(urlState.filter(state => state.url !== url))
+    setUrls({
+      ...urls,
+      [Object.keys(urls)[0]]: selectedUrls.filter(u => u !== url),
+    })
+  }
+
   return (
     <Container>
       <div className="sidebar">
-        <AddNew onSubmit={handleAdd}>
+        {/* <AddNew onSubmit={handleAdd}>
           <input type="text" placeholder="Add url..." />
           <button type="submit">Add</button>
-        </AddNew>
-        {sitesData.length && (
+        </AddNew> */}
+        {selectedUrls.length && (
           <LinkAccordion
-            data={sitesData}
+            data={urlState}
             focusIndex={focusIndex}
             onSelect={handleFocus}
             onRemove={handleRemove}
           />
         )}
       </div>
-      <div className="images" ref={ref}>
-        {sitesData.map((data, i) => (
-          <Image data={data} key={i} onViewportEnter={() => setFocusIndex(i)} />
+      {/* <div className="images" ref={ref}>
+        {urlState.map((data, i) => (
+          <Image data={data} key={data.url} onViewportEnter={() => setFocusIndex(i)} />
         ))}
-      </div>
+      </div> */}
     </Container>
   )
 }
@@ -140,3 +220,26 @@ const LoadingBox = styled(motion.div)`
   display: grid;
   place-content: center;
 `
+
+type SitesState =
+  | Partial<Awaited<ReturnType<typeof api.getSiteData.query>>>
+  | {
+      url: string
+      loading?: boolean
+    }
+
+const seedUrls = [
+  'https://www.reddit.com/r/ukraine/comments/w85z14/the_armed_forces_of_ukraine_attacked_an_oil_depot/',
+  'https://www.facebook.com',
+  'https://www.youtube.com',
+  'https://www.twitter.com',
+  'https://www.linkedin.com',
+  'https://www.pinterest.com',
+  'https://www.tumblr.com',
+  'https://www.quora.com',
+  'https://www.flickr.com',
+  'https://www.github.com',
+  'https://www.dribbble.com',
+  'https://www.behance.net',
+  'https://www.500px.com',
+]

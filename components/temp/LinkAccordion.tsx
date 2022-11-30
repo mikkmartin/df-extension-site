@@ -1,5 +1,5 @@
 import * as Accordion from '@radix-ui/react-accordion'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash } from 'components/icons/Trash'
@@ -27,8 +27,8 @@ export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
     <Container type="single" value={currentTab} ref={containerEl}>
       {Object.entries(groupBySite(data)).map(([hostname, data], i) => {
         return (
-          <>
-            <div className="header" key={i}>
+          <React.Fragment key={i}>
+            <div className="header">
               <span>{hostname.split('www.')[1] || hostname}</span>
             </div>
             {data.map((data, _i) => {
@@ -44,7 +44,7 @@ export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
                   onFocus={ev => handleFocus(ev, data.url, _nth)}>
                   <div className="header">
                     <Accordion.Trigger asChild>
-                      <input type="text" value={data.url} />
+                      <input type="text" defaultValue={data.url} />
                     </Accordion.Trigger>
                     <a className="button" href={data.url} target="_blank">
                       <ExternalLink />
@@ -79,7 +79,7 @@ export const LinkAccordion = ({ data, onSelect, focusIndex, onRemove }) => {
                 </Item>
               )
             })}
-          </>
+          </React.Fragment>
         )
       })}
     </Container>
