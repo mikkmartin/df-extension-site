@@ -2,8 +2,9 @@ import type { AppProps } from 'next/app'
 import { GlobalStyles } from 'components/GlobalStyles'
 import { Layout } from 'components/Layout'
 import Head from 'next/head'
+import { trpc } from 'data/api'
 
-export default function App({ Component, pageProps, router }: AppProps) {
+function App({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
@@ -23,3 +24,5 @@ export default function App({ Component, pageProps, router }: AppProps) {
     </>
   )
 }
+
+export default trpc.withTRPC(App)

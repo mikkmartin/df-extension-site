@@ -1,6 +1,6 @@
 import { Loader } from 'components/Loader'
 import { LinkAccordion } from 'components/temp/LinkAccordion'
-import { api } from 'data/server'
+import { trpc } from 'data/api'
 import { motion } from 'framer-motion'
 import { objectToUrlParams } from 'lib/objectToUrlParams'
 import { FC, useEffect, useRef, useState } from 'react'
@@ -41,9 +41,24 @@ export default function Test() {
     return str.split('\n').every(line => line.startsWith('http') || line.startsWith('https'))
   }
 
+  const [focusIndex, setFocusIndex] = useState(0)
+  const ref = useRef(null)
+
+  const handleFocus = i => {
+    if (!ref.current) return
+    const img = ref.current.querySelectorAll('img')
+    if (img) img[i]?.scrollIntoView({ block: 'center' })
+  }
+
+  const { data, refetch } = trpc.getSiteData.useQuery(
+    { urls: selectedUrls },
+    { initialData: selectedUrls.map(url => ({ url, loading: true })) }
+  )
+
   useNoclip({
     ...actions,
     clearLocalStorage: () => remove(),
+    refetch,
     addUrlList: {
       title: 'text-input',
       content: 'text-area',
@@ -64,37 +79,12 @@ export default function Test() {
     },
   })
 
-  const [focusIndex, setFocusIndex] = useState(0)
-  const ref = useRef(null)
-
-  const handleFocus = i => {
-    if (!ref.current) return
-    const img = ref.current.querySelectorAll('img')
-    if (img) img[i]?.scrollIntoView({ block: 'center' })
-  }
-
-  const [urlState, setUrlsState] = useState<SitesState[]>(
-    selectedUrls.map(url => ({ url, loading: true }))
-  )
-
-  useEffect(() => {
-    setUrlsState(selectedUrls.map(url => ({ url, loading: true })))
-    selectedUrls.map(async (url, i) => {
-      const data = await api.getSiteData.query({ url })
-      setUrlsState(prev => {
-        const newState = [...prev]
-        newState[i] = { url, ...data, loading: false }
-        return newState
-      })
-    })
-  }, [selectedUrls])
-
   function handleRemove(url) {
-    setUrlsState(urlState.filter(state => state.url !== url))
-    setUrls({
-      ...urls,
-      [Object.keys(urls)[0]]: selectedUrls.filter(u => u !== url),
-    })
+    // setUrlsState(urlState.filter(state => state.url !== url))
+    // setUrls({
+    //   ...urls,
+    //   [Object.keys(urls)[0]]: selectedUrls.filter(u => u !== url),
+    // })
   }
 
   return (
@@ -106,18 +96,19 @@ export default function Test() {
         </AddNew> */}
         {selectedUrls.length && (
           <LinkAccordion
-            data={urlState}
+            data={data.map((d, i) => ({ ...d, url: selectedUrls[i] }))}
             focusIndex={focusIndex}
             onSelect={handleFocus}
             onRemove={handleRemove}
           />
         )}
       </div>
-      {/* <div className="images" ref={ref}>
-        {urlState.map((data, i) => (
-          <Image data={data} key={data.url} onViewportEnter={() => setFocusIndex(i)} />
+      <div className="images" ref={ref}>
+        {data.map((_data, i) => (
+          //@ts-ignore
+          <Image data={_data} key={_data.url} onViewportEnter={() => setFocusIndex(i)} />
         ))}
-      </div> */}
+      </div>
     </Container>
   )
 }
@@ -222,7 +213,7 @@ const LoadingBox = styled(motion.div)`
 `
 
 type SitesState =
-  | Partial<Awaited<ReturnType<typeof api.getSiteData.query>>>
+  | any
   | {
       url: string
       loading?: boolean
