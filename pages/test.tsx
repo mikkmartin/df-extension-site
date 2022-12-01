@@ -87,6 +87,8 @@ export default function Test() {
     // })
   }
 
+  const key = selectedUrls.map(url => url.charAt(0)).join('')
+
   return (
     <Container>
       <div className="sidebar">
@@ -103,7 +105,7 @@ export default function Test() {
           />
         )}
       </div>
-      <div className="images" ref={ref}>
+      <div key={key} className="images" ref={ref}>
         {data.map((_data, i) => (
           //@ts-ignore
           <Image data={_data} key={_data.url} onViewportEnter={() => setFocusIndex(i)} />
